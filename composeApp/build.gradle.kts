@@ -9,8 +9,12 @@ plugins {
 
 kotlin {
     js {
-        browser()
-        binaries.executable()
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+//                publicPath = "./"
+            }
+        }
     }
     
     @OptIn(ExperimentalWasmDsl::class)
