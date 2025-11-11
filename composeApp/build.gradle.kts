@@ -65,6 +65,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation("tech.annexflow.compose:constraintlayout-compose-multiplatform:0.6.1")
+            implementation(libs.material.icons.extended)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

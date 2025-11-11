@@ -1,4 +1,4 @@
-package com.uziro.portfolio
+package com.uziro.portfolio.section
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -45,7 +44,7 @@ fun HeaderMenu(modifier: Modifier = Modifier, title: String, onClick: (String) -
     }, modifier = modifier) {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineSmall.copy(color = Color.Black)
+            style = MaterialTheme.typography.headlineSmall.copy(color = Color.Black, fontSize = 20.sp)
         )
     }
 }
