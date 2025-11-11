@@ -45,7 +45,7 @@ fun HeaderMenu(modifier: Modifier = Modifier, title: String, onClick: (String) -
     }, modifier = modifier) {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineMedium.copy(color = Color.Black)
+            style = MaterialTheme.typography.headlineSmall.copy(color = Color.Black)
         )
     }
 }
