@@ -3,7 +3,7 @@ package com.uziro.portfolio
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ComposeAppWebTest {
+class ComposeAppCommonTest {
 
     @Test
     fun example() {
