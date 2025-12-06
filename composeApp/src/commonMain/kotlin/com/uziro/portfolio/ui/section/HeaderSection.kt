@@ -1,4 +1,4 @@
-package com.uziro.portfolio.section
+package com.uziro.portfolio.ui.section
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,7 +36,7 @@ import org.jetbrains.compose.resources.painterResource
 fun HeaderSection(
     modifier: Modifier = Modifier,
     selectedMenu: String = "Home",
-    onMenuSelected: (String) -> Unit = {}
+    onMenuSelected: (Int) -> Unit = {}
 ) {
 
     val uriHandler = LocalUriHandler.current
@@ -58,7 +58,7 @@ fun HeaderSection(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                menus.forEach { item ->
+                menus.forEachIndexed { index, item ->
                     val isSelected = selectedMenu == item
                     Text(
                         text = item,
@@ -68,7 +68,7 @@ fun HeaderSection(
                         ),
                         modifier = Modifier
                             .pointerHoverIcon(PointerIcon.Hand)
-                            .clickable { onMenuSelected(item) }
+                            .clickable { onMenuSelected(index) }
                     )
                 }
 
