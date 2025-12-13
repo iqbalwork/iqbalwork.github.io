@@ -48,8 +48,9 @@ fun HeaderSection(
     TopAppBar(
         modifier = modifier
             .fillMaxWidth()
+            .padding(horizontal = 8.dp)
             .background(Color.White)
-            .padding(vertical = 8.dp, horizontal = 20.dp),
+            .padding(vertical = 8.dp),
         title = {
             Text(
                 "Uziro",
