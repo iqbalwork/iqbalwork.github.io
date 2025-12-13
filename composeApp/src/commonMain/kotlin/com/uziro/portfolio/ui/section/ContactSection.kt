@@ -1,146 +1,155 @@
 package com.uziro.portfolio.ui.section
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.painterResource
+import uziroportfolio.composeapp.generated.resources.Res
+import uziroportfolio.composeapp.generated.resources.githublogo
+import uziroportfolio.composeapp.generated.resources.linkedIn
+import uziroportfolio.composeapp.generated.resources.wa
 
 @Composable
 fun ContactSection(
     modifier: Modifier = Modifier
 ) {
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var message by remember { mutableStateOf("") }
+
+    val uriHandler = LocalUriHandler.current
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFFE5E0F7)) // Light lilac background like Meelo
-            .padding(vertical = 80.dp),
-        contentAlignment = Alignment.TopCenter
+//            .background(Color(0xFF212121)) // Dark background
+            .padding(vertical = 80.dp, horizontal = 16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        // Main Card
         Column(
-            modifier = Modifier
-                .width(900.dp)
-                .clip(RoundedCornerShape(30.dp))
-                .background(Color.White)
-                .border(
-                    BorderStroke(1.dp, Color.Black),
-                    RoundedCornerShape(30.dp)
-                )
-                .padding(horizontal = 50.dp, vertical = 60.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.widthIn(max = 600.dp)
         ) {
-
-            // Label
             Text(
-                "* CONTACT",
+                "Get in Touch",
                 style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(50)
-                    )
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+//                color = Color.White
             )
 
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(16.dp))
 
-            // Title
             Text(
-                "Got a project in mind?\nLet's get in touch.",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold
+                "Let's Build Something Great",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 40.sp,
+                    textAlign = TextAlign.Center
                 ),
-                textAlign = TextAlign.Center
+//                color = Color.White
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                "I'm currently open to new opportunities and collaborations. If you have a project in mind or just want to connect, feel free to reach out.",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+//                color = Color(0xFFBDBDBD) // Lighter gray for description
             )
 
             Spacer(Modifier.height(40.dp))
 
-            // ---- FORM FIELDS ----
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(40.dp)
+            Button(
+                onClick = {
+                    uriHandler.openUri("mailto:work.iqbalfauzi@gmail.com")
+                },
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF333333))
             ) {
-
-                Column(Modifier.weight(1f)) {
-                    Text("Name", style = MaterialTheme.typography.labelMedium)
-                    TextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        placeholder = { Text("Your name *") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = textFieldColors()
-                    )
-                }
-
-                Column(Modifier.weight(1f)) {
-                    Text("Email", style = MaterialTheme.typography.labelMedium)
-                    TextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        placeholder = { Text("Email address *") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = textFieldColors()
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(28.dp))
-
-            Column(Modifier.fillMaxWidth()) {
-                Text("Message", style = MaterialTheme.typography.labelMedium)
-
-                TextField(
-                    value = message,
-                    onValueChange = { message = it },
-                    placeholder = { Text("Tell me about your project *") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(130.dp),
-                    colors = textFieldColors(),
+                Icon(
+                    imageVector = Icons.Default.Email,
+                    contentDescription = "Email",
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    "work.iqbalfauzi@gmail.com",
+                    color = Color.White
                 )
             }
 
             Spacer(Modifier.height(40.dp))
 
-            // Submit Button styled like Meelo
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .height(48.dp)
-                    .width(120.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                border = BorderStroke(1.dp, Color.Black),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Text("Submit", color = Color.Black)
+                ContactItem(
+                    painter = painterResource(Res.drawable.linkedIn),
+                ) {
+                    uriHandler.openUri("https://www.linkedin.com/in/ifauzii/")
+                }
+                ContactItem(
+                    painter = painterResource(Res.drawable.githublogo),
+                ) {
+                    uriHandler.openUri("https://github.com/iqbalwork")
+                }
+                ContactItem(
+                    painter = painterResource(Res.drawable.wa),
+                ) {
+                    uriHandler.openUri("https://wa.me/6287822882668")
+                }
             }
         }
     }
 }
 
 @Composable
-private fun textFieldColors() = TextFieldDefaults.colors(
-    focusedContainerColor = Color.Transparent,
-    unfocusedContainerColor = Color.Transparent,
-    disabledContainerColor = Color.Transparent,
-    focusedIndicatorColor = Color.Black,
-    unfocusedIndicatorColor = Color.Black,
-    cursorColor = Color.Black,
-)
+fun ContactItem(
+    painter: Painter,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .pointerHoverIcon(PointerIcon.Hand)
+            .clip(RoundedCornerShape(8.dp))
+            .border(
+                width = 1.dp,
+                color = Color.Black,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .background(Color.White)
+            .clickable {
+                onClick()
+            }
+            .padding(8.dp)
+            .size(24.dp)
+    ) {
+        Image(
+            painter = painter,
+            contentDescription = null,
+            modifier = Modifier
+        )
+    }
+}

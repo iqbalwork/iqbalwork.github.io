@@ -41,6 +41,8 @@ fun HomeSection(modifier: Modifier) {
         contentAlignment = Alignment.Center
     ) {
 
+        val uriHandler = LocalUriHandler.current
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,  // Center vertically
@@ -73,7 +75,7 @@ fun HomeSection(modifier: Modifier) {
             Spacer(Modifier.height(20.dp))
 
             Text(
-                "I’m a Software Engineer based in Bandung, Indonesia. Currently exploring Kotlin Multiplatform to build wider platform.",
+                "I’m a Software Engineer based in Bandung, Indonesia. Currently adopting Kotlin Multiplatform to build wider platform.",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.width(700.dp)
@@ -83,9 +85,13 @@ fun HomeSection(modifier: Modifier) {
 
             // Buttons
             Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-                Button(onClick = {}) { Text("Contact Me") }
+                Button(onClick = {
+                    uriHandler.openUri("https://wa.me/6287822882668")
+                }) { Text("WhatsApp Me") }
 
-                OutlinedButton(onClick = {}) { Text("Download CV") }
+                OutlinedButton(onClick = {
+                    uriHandler.openUri("https://docs.google.com/document/d/12_bC8Va-h_Gi1Z5pC3Ig1n4k2fEdiNWQyd5HOKFSigs/edit?usp=sharing")
+                }) { Text("Download CV") }
             }
         }
     }
@@ -95,5 +101,7 @@ fun HomeSection(modifier: Modifier) {
 @Composable
 @Preview(widthDp = 1920, heightDp = 1080, showBackground = true)
 fun ProfileSectionPreview() {
-    HomeSection(Modifier.fillMaxSize())
+    HomeSection(
+        Modifier.fillMaxSize(),
+    )
 }

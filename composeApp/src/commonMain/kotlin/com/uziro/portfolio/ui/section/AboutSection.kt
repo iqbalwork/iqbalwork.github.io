@@ -126,23 +126,13 @@ fun AboutSection(modifier: Modifier) {
                     Spacer(Modifier.height(12.dp))
 
                     Text(
-                        "I’m Jonathan Meelo, a product designer based in London. I’m very passionate about the work that I do every day.",
-                        style = MaterialTheme.typography.bodyLarge,
-                        lineHeight = 26.sp
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    Text(
-                        "My journey in this dynamic and ever-evolving field has been a testament to my passion for crafting meaningful user experiences, leveraging technologies, and fearlessly pushing the boundaries of digital creativity.",
-                        style = MaterialTheme.typography.bodyLarge,
-                        lineHeight = 26.sp
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    Text(
-                        "I thrive on transforming ideas into intuitive and impactful designs.",
+                        """
+                            Android Engineer with 7+ years of experience designing, developing, and scaling mobile applications. 
+                            
+                            Skilled in Kotlin, Jetpack Compose, MVVM/MVP, Firebase, GraphQL, and IoT integrations, with a track record of delivering apps with 99% crash-free rates and millions of users. 
+                            
+                            Currently adopting Kotlin Multiplatform (KMP) to expand capabilities across Android, iOS, and shared business logic. Experienced collaborating with cross-functional and remote teams across different time zones.
+                        """.trimIndent(),
                         style = MaterialTheme.typography.bodyLarge,
                         lineHeight = 26.sp
                     )
@@ -169,18 +159,10 @@ fun AboutSection(modifier: Modifier) {
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        "I have had the pleasure to work with companies across a variety of industries.\n" +
-                                "I’m always interested in new, exciting and challenging adventures.",
+                        text = "A timeline of my professional journey and key accomplishments in the tech industry.",
                         style = MaterialTheme.typography.bodyLarge,
                         lineHeight = 26.sp
                     )
-                    Spacer(Modifier.height(24.dp))
-                    Button(
-                        onClick = {},
-                        modifier = Modifier.width(160.dp)
-                    ) {
-                        Text("More About Me")
-                    }
                 }
 
                 Spacer(Modifier.width(60.dp))
@@ -189,21 +171,27 @@ fun AboutSection(modifier: Modifier) {
                 Column(modifier = Modifier.weight(1f)) {
 
                     ExperienceItem(
-                        date = "NOV 2017 — PRESENT",
-                        role = "Creative Director at Malory House",
-                        desc = "Led a talented team in crafting compelling brand experiences..."
+                        date = "Mar 2020 — PRESENT",
+                        role = "Mobile Engineer at Bobobox",
+                        desc = "Led major app modernization: architecture overhaul, Kotlin/Compose migration, reliability boost (crash-free 79% → 99%), GraphQL integration, IoT (MQTT) features, automated deployments, advanced UI features, and early KMP adoption for android-ios cross platform."
                     )
 
                     ExperienceItem(
-                        date = "SEP 2015 — APR 2017",
-                        role = "Senior Developer at Longwave Studio",
-                        desc = "Collaborated with cross-functional teams to optimize performance..."
+                        date = "Oct 2021 — Nov 2023",
+                        role = "Senior Developer at Quran Belajar Indonesia",
+                        desc = "Developed Quran app features: prayer times, Qibla navigation, floating Azan notifications, ayah highlighter (custom canvas). Optimized app performance and engagement, resulting in strong ratings on Google Play."
                     )
 
                     ExperienceItem(
-                        date = "MAY 2015 — SEP 2015",
-                        role = "Junior Developer at Webpaint Media",
-                        desc = "Assisted in front-end development, debugging, and UI refinement..."
+                        date = "Feb 2019 — Mar 2020",
+                        role = "Android Engineer at Jasamedika Saranatama",
+                        desc = "Built healthcare apps including Buku Dokter and PSC 119 emergency app from scratch. Enhanced HRIS and Buku Akademik apps, ensuring scalability and performance."
+                    )
+
+                    ExperienceItem(
+                        date = "Oct 2018 — Dec 2018",
+                        role = "Junior Android Engineer at Kakatu",
+                        desc = "Built an internal HRIS app; gained foundational experience in Android app architecture and modular design."
                     )
                 }
             }
