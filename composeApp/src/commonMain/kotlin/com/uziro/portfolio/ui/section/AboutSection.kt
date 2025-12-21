@@ -178,7 +178,7 @@ fun AboutSection(modifier: Modifier) {
 
                     ExperienceItem(
                         date = "Oct 2021 — Nov 2023",
-                        role = "Senior Developer at Quran Belajar Indonesia",
+                        role = "Senior Android Engineer at Quran Belajar Indonesia",
                         desc = "Developed Quran app features: prayer times, Qibla navigation, floating Azan notifications, ayah highlighter (custom canvas). Optimized app performance and engagement, resulting in strong ratings on Google Play."
                     )
 
