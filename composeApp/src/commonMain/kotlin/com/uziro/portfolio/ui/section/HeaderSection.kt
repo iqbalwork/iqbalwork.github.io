@@ -43,7 +43,7 @@ fun HeaderSection(
 
     val uriHandler = LocalUriHandler.current
     var selectedMenu by remember { mutableStateOf("Home") }
-    val menus = listOf("Home", "About", "Contact")
+    val menus = listOf("Home", "About", "Portfolio", "Contact")
 
     TopAppBar(
         modifier = modifier
