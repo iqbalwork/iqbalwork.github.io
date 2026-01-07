@@ -75,7 +75,7 @@ fun HomeSection(modifier: Modifier) {
             Spacer(Modifier.height(20.dp))
 
             Text(
-                "I’m a Software Engineer based in Bandung, Indonesia. Currently adopting Kotlin Multiplatform to build wider platform.",
+                "I’m a Software Engineer based in Bandung, Indonesia. Currently adopting Kotlin Multiplatform to build wider platform. This website is built with Compose Multiplatform",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.width(700.dp)

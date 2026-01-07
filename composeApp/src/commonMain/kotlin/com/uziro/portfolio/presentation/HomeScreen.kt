@@ -42,9 +42,9 @@ fun HomeScreen() {
             item {
                 AboutSection(modifier = Modifier)
             }
-//            item {
-//                PortfolioSection(modifier = Modifier)
-//            }
+            item {
+                PortfolioSection(modifier = Modifier)
+            }
             item {
                 ContactSection(modifier = Modifier)
             }
