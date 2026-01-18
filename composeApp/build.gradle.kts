@@ -67,6 +67,7 @@ kotlin {
             implementation(libs.constraintlayout.compose.multiplatform)
             implementation(libs.material.icons.extended)
             implementation(libs.kotlinx.datetime)
+            implementation("tech.annexflow.compose:constraintlayout-compose-multiplatform:0.6.1")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

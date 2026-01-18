@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,8 +32,10 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.uziro.portfolio.data.repository.socialMediaList
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,40 +54,58 @@ fun HeaderSection(
             .padding(horizontal = 8.dp)
             .background(Color.White)
             .padding(vertical = 8.dp),
-        title = {
-            Text(
-                "Uziro",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-            )
-        },
+        title = {},
         actions = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                menus.forEachIndexed { index, item ->
-                    val isSelected = selectedMenu == item
-                    Text(
-                        text = item,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            color = if (isSelected) Color(0xFF6B63FF) else Color.Black,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        ),
-                        modifier = Modifier
-                            .pointerHoverIcon(PointerIcon.Hand)
-                            .clickable {
-                                selectedMenu = item
-                                onMenuSelected(index)
-                            }
-                    )
-                }
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                val (logo, menu, social) = createRefs()
 
-                Spacer(Modifier.width(24.dp))
+                Text(
+                    text = "Uziro",
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.constrainAs(logo) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                    }
+                )
+
+                // Menu
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.constrainAs(menu) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                ) {
+                    menus.forEachIndexed { index, item ->
+                        val isSelected = selectedMenu == item
+                        Text(
+                            text = item,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                color = if (isSelected) Color(0xFF6B63FF) else Color.Black,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            ),
+                            modifier = Modifier
+                                .pointerHoverIcon(PointerIcon.Hand)
+                                .clickable {
+                                    selectedMenu = item
+                                    onMenuSelected(index)
+                                }
+                        )
+                    }
+                }
 
                 // Social Icons
                 Row(
-                    modifier = Modifier.padding(end = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(end = 8.dp).constrainAs(social) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
+                    },
                 ) {
                     socialMediaList.forEach { socialData ->
                         Box(
@@ -114,4 +135,12 @@ fun HeaderSection(
             }
         }
     )
+}
+
+@Preview
+@Composable
+fun PreviewHeaderSection() {
+    MaterialTheme {
+        HeaderSection()
+    }
 }

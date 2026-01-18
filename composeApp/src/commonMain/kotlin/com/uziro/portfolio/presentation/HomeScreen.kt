@@ -9,17 +9,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.uziro.portfolio.data.Project
 import com.uziro.portfolio.ui.section.AboutSection
 import com.uziro.portfolio.ui.section.ContactSection
 import com.uziro.portfolio.ui.section.FooterSection
 import com.uziro.portfolio.ui.section.HeaderSection
 import com.uziro.portfolio.ui.section.HomeSection
-import com.uziro.portfolio.ui.section.PortfolioCard
 import com.uziro.portfolio.ui.section.PortfolioSection
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onProjectClick: (Project) -> Unit = {}
+) {
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
@@ -43,7 +45,10 @@ fun HomeScreen() {
                 AboutSection(modifier = Modifier)
             }
             item {
-                PortfolioSection(modifier = Modifier)
+                PortfolioSection(
+                    modifier = Modifier,
+                    onProjectClick = onProjectClick
+                )
             }
             item {
                 ContactSection(modifier = Modifier)
@@ -53,5 +58,4 @@ fun HomeScreen() {
             }
         }
     }
-
 }
