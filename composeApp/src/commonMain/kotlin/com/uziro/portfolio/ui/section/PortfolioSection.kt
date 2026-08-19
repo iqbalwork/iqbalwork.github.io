@@ -1,160 +1,192 @@
 package com.uziro.portfolio.ui.section
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.uziro.portfolio.data.Project
 import com.uziro.portfolio.data.repository.projectList
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.uziro.portfolio.ui.adaptive.AdaptiveBox
+import com.uziro.portfolio.ui.animation.interactiveHoverScale
+import com.uziro.portfolio.ui.component.ProjectCard
+import com.uziro.portfolio.ui.component.ProjectDetailDialog
+import com.uziro.portfolio.ui.component.SectionHeader
+import com.uziro.portfolio.ui.theme.PortfolioColors
 
-@Composable
-fun PortfolioCard(
-    project: Project,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
-) {
-
-    val uriHandler = LocalUriHandler.current
-
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color.White)
-            .border(
-                BorderStroke(1.dp, Color(0xFFCCCCCC)),
-                shape = RoundedCornerShape(20.dp)
-            )
-            .clickable { onClick() }
-            .padding(20.dp)
-    ) {
-        // IMAGE
-        Image(
-            painter = painterResource(project.image),
-            contentDescription = project.title,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(14.dp))
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        // TITLE
-        Text(
-            text = project.title,
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-
-        Spacer(Modifier.height(6.dp))
-
-        // DESCRIPTION
-        Text(
-            text = project.overview,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.DarkGray,
-            maxLines = 3,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-    }
-}
-
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PortfolioSection(
     modifier: Modifier = Modifier,
     onProjectClick: (Project) -> Unit = {}
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 60.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    var selectedCategory by remember { mutableStateOf("All") }
+    var inspectingProject by remember { mutableStateOf<Project?>(null) }
 
-        // ---- LABEL ----
-        Text(
-            text = "* MY WORKS",
-            style = MaterialTheme.typography.labelLarge,
+    val categories = listOf("All", "Hospitality & IoT", "Education & Utility", "Kotlin Multiplatform (KMP)", "Healthcare & Emergency")
+
+    val filteredProjects = remember(selectedCategory) {
+        if (selectedCategory == "All") projectList else projectList.filter { it.category == selectedCategory }
+    }
+
+    AdaptiveBox(modifier = modifier.fillMaxWidth()) { layoutInfo ->
+        Box(
             modifier = Modifier
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(50)
-                )
-                .padding(horizontal = 14.dp, vertical = 6.dp)
-        )
-
-        Spacer(Modifier.height(20.dp))
-
-        // ---- SECTION TITLE ----
-        Text(
-            text = "Check out some of our awesome\nprojects with creative ideas.",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(Modifier.height(40.dp))
-
-        // ---- 2 COLUMN GRID ----
-        Column(
-            verticalArrangement = Arrangement.spacedBy(28.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .background(PortfolioColors.Background)
+                .padding(horizontal = layoutInfo.horizontalPadding, vertical = 44.dp)
         ) {
-            projectList.chunked(2).forEach { rowItems ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(0.9f),
-                    horizontalArrangement = Arrangement.spacedBy(28.dp)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                SectionHeader(
+                    tag = "Featured Work",
+                    title = "Key Projects & Case Studies",
+                    subtitle = "Production-grade applications delivering high concurrency, low latency, and rock-solid 99.9% crash-free rates."
+                )
+
+                // Category Filter Pills with Material You styling & Hover Animation
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    rowItems.forEach { item ->
-                        PortfolioCard(
-                            project = item,
-                            modifier = Modifier.weight(1f),
-                            onClick = { onProjectClick(item) }
+                    categories.forEach { category ->
+                        val isSelected = selectedCategory == category
+                        val bgColor by animateColorAsState(
+                            targetValue = if (isSelected) PortfolioColors.PrimaryContainer else PortfolioColors.SurfaceContainer,
+                            animationSpec = tween(300)
                         )
+                        val textColor by animateColorAsState(
+                            targetValue = if (isSelected) PortfolioColors.OnPrimaryContainer else PortfolioColors.OnSurfaceVariant,
+                            animationSpec = tween(300)
+                        )
+                        val borderColor by animateColorAsState(
+                            targetValue = if (isSelected) PortfolioColors.Primary else PortfolioColors.OutlineVariant,
+                            animationSpec = tween(300)
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(bgColor)
+                                .border(1.dp, borderColor, RoundedCornerShape(12.dp))
+                                .interactiveHoverScale(targetScale = 1.05f)
+                                .clickable { selectedCategory = category }
+                                .padding(horizontal = 14.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = category,
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 11.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                color = textColor
+                            )
+                        }
                     }
-                    if (rowItems.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
+                }
+
+                Spacer(modifier = Modifier.height(28.dp))
+
+                // Adaptive Grid for Projects
+                if (layoutInfo.isExpanded) {
+                    // 3-Column Desktop Grid
+                    val chunks = filteredProjects.chunked(3)
+                    Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                        chunks.forEach { rowProjects ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(20.dp)
+                            ) {
+                                rowProjects.forEach { project ->
+                                    ProjectCard(
+                                        project = project,
+                                        onViewDetail = {
+                                            inspectingProject = project
+                                            onProjectClick(project)
+                                        },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                for (i in 0 until (3 - rowProjects.size)) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    }
+                } else if (layoutInfo.isMedium) {
+                    // 2-Column Tablet Grid
+                    val chunks = filteredProjects.chunked(2)
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        chunks.forEach { rowProjects ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                rowProjects.forEach { project ->
+                                    ProjectCard(
+                                        project = project,
+                                        onViewDetail = {
+                                            inspectingProject = project
+                                            onProjectClick(project)
+                                        },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                if (rowProjects.size == 1) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // 1-Column Mobile
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        filteredProjects.forEach { project ->
+                            ProjectCard(
+                                project = project,
+                                onViewDetail = {
+                                    inspectingProject = project
+                                    onProjectClick(project)
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 }
             }
+
+            // Project Detail Modal Dialog
+            if (inspectingProject != null) {
+                ProjectDetailDialog(
+                    project = inspectingProject!!,
+                    onDismiss = { inspectingProject = null }
+                )
+            }
         }
     }
-}
-
-
-@Preview
-@Composable
-fun PreviewPortfolioSection(modifier: Modifier = Modifier) {
-    PortfolioSection(modifier.fillMaxSize())
 }
