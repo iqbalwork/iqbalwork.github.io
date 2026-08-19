@@ -1,146 +1,181 @@
 package com.uziro.portfolio.ui.section
 
-import androidx.compose.foundation.Image
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import com.uziro.portfolio.data.repository.socialMediaList
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import com.uziro.portfolio.data.repository.profileInfo
+import com.uziro.portfolio.ui.adaptive.AdaptiveBox
+import com.uziro.portfolio.ui.animation.interactiveHoverScale
+import com.uziro.portfolio.ui.theme.PortfolioColors
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderSection(
     modifier: Modifier = Modifier,
-    onMenuSelected: (Int) -> Unit = {}
+    onNavigateToIndex: (Int) -> Unit = {}
 ) {
-
     val uriHandler = LocalUriHandler.current
-    var selectedMenu by remember { mutableStateOf("Home") }
-    val menus = listOf("Home", "About", "Portfolio", "Contact")
 
-    TopAppBar(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
-            .background(Color.White)
-            .padding(vertical = 8.dp),
-        title = {},
-        actions = {
-            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-                val (logo, menu, social) = createRefs()
+    // Pulsing beacon for available badge
+    val transition = rememberInfiniteTransition()
+    val pulseAlpha by transition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
 
-                Text(
-                    text = "Uziro",
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.constrainAs(logo) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                    }
-                )
-
-                // Menu
+    AdaptiveBox(modifier = modifier) { layoutInfo ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(PortfolioColors.BgGlass)
+                .border(0.5.dp, PortfolioColors.OutlineVariant)
+                .padding(horizontal = layoutInfo.horizontalPadding, vertical = 16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Logo & Status Indicator
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.constrainAs(menu) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .interactiveHoverScale(targetScale = 1.04f)
+                        .clickable { onNavigateToIndex(0) }
                 ) {
-                    menus.forEachIndexed { index, item ->
-                        val isSelected = selectedMenu == item
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(PortfolioColors.Primary),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            text = item,
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                color = if (isSelected) Color(0xFF6B63FF) else Color.Black,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                            ),
-                            modifier = Modifier
-                                .pointerHoverIcon(PointerIcon.Hand)
-                                .clickable {
-                                    selectedMenu = item
-                                    onMenuSelected(index)
-                                }
+                            text = "IF",
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 16.sp,
+                            color = Color.White
                         )
                     }
-                }
 
-                // Social Icons
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.padding(end = 8.dp).constrainAs(social) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
-                    },
-                ) {
-                    socialMediaList.forEach { socialData ->
-                        Box(
-                            modifier = Modifier
-                                .pointerHoverIcon(PointerIcon.Hand)
-                                .clip(RoundedCornerShape(8.dp))
-                                .border(
-                                    width = 1.dp,
-                                    color = Color.Black,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .background(Color.White)
-                                .clickable {
-                                    uriHandler.openUri(socialData.url)
-                                }
-                                .padding(8.dp)
-                                .size(24.dp)
+                    Column {
+                        Text(
+                            text = profileInfo.name,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = PortfolioColors.OnSurface
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
-                            Image(
-                                painter = painterResource(socialData.icon),
-                                contentDescription = null,
+                            Box(
                                 modifier = Modifier
+                                    .size(7.dp)
+                                    .clip(CircleShape)
+                                    .background(PortfolioColors.EmeraldSuccess.copy(alpha = pulseAlpha))
+                            )
+                            Text(
+                                text = "Available for KMP / Android Roles",
+                                fontSize = 11.sp,
+                                color = PortfolioColors.EmeraldSuccess,
+                                fontWeight = FontWeight.Medium
                             )
                         }
                     }
                 }
+
+                // Desktop / Tablet Navigation Links
+                if (!layoutInfo.isCompact) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        NavLink("Home") { onNavigateToIndex(0) }
+                        NavLink("Experience") { onNavigateToIndex(1) }
+                        NavLink("Projects") { onNavigateToIndex(2) }
+                        NavLink("Skills") { onNavigateToIndex(3) }
+                        NavLink("Contact") { onNavigateToIndex(4) }
+
+                        Button(
+                            onClick = { uriHandler.openUri(profileInfo.cvUrl) },
+                            colors = ButtonDefaults.buttonColors(containerColor = PortfolioColors.Primary),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.interactiveHoverScale(targetScale = 1.05f),
+                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+                        ) {
+                            Text(
+                                text = "Download CV",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                } else {
+                    // Mobile Quick CTA
+                    Button(
+                        onClick = { uriHandler.openUri(profileInfo.whatsappUrl) },
+                        colors = ButtonDefaults.buttonColors(containerColor = PortfolioColors.Primary),
+                        shape = RoundedCornerShape(10.dp),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
+                        Text("Connect", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
             }
         }
-    )
+    }
 }
 
-@Preview
 @Composable
-fun PreviewHeaderSection() {
-    MaterialTheme {
-        HeaderSection()
-    }
+fun NavLink(text: String, onClick: () -> Unit) {
+    Text(
+        text = text,
+        fontSize = 13.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = PortfolioColors.OnSurfaceVariant,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .interactiveHoverScale(targetScale = 1.08f)
+            .clickable { onClick() }
+            .padding(horizontal = 8.dp, vertical = 6.dp)
+    )
 }

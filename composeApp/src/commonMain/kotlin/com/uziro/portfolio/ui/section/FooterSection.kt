@@ -1,19 +1,18 @@
 package com.uziro.portfolio.ui.section
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
-import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
+import com.uziro.portfolio.ui.theme.PortfolioColors
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun FooterSection(
     modifier: Modifier = Modifier
@@ -21,19 +20,14 @@ fun FooterSection(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 60.dp),
+            .padding(vertical = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Spacer(Modifier.height(6.dp))
-        val currentYear = Clock.System.now().toLocalDateTime(currentSystemDefault()).year
-
-        // ---- COPYRIGHT ----
         Text(
-            "© $currentYear Iqbal Fauzi. Built with Compose Multiplatform.",
-            color = Color.DarkGray,
-            fontSize = 14.sp
+            "© 2026 Iqbal Fauzi. Built with Compose Multiplatform.",
+            color = PortfolioColors.TextMuted,
+            fontSize = 13.sp
         )
-
     }
 }

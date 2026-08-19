@@ -36,6 +36,7 @@ kotlin {
 //                publicPath = "./"
             }
         }
+        binaries.executable()
     }
     
     @OptIn(ExperimentalWasmDsl::class)
