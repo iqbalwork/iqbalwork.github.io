@@ -1,44 +1,60 @@
 package com.uziro.portfolio.ui.section
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Chat
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
+import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.rounded.Mail
+import androidx.compose.material.icons.rounded.School
+import androidx.compose.material.icons.rounded.Shop
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.UriHandler
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.uziro.portfolio.data.repository.additionalProfileInfo
 import com.uziro.portfolio.data.repository.educationInfo
 import com.uziro.portfolio.data.repository.profileInfo
 import com.uziro.portfolio.data.repository.socialMediaList
 import com.uziro.portfolio.ui.adaptive.AdaptiveBox
 import com.uziro.portfolio.ui.animation.interactiveHoverScale
 import com.uziro.portfolio.ui.component.SectionHeader
-import com.uziro.portfolio.ui.theme.PortfolioColors
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -46,158 +62,162 @@ fun ContactSection(modifier: Modifier = Modifier) {
     val uriHandler = LocalUriHandler.current
 
     AdaptiveBox(modifier = modifier.fillMaxWidth()) { layoutInfo ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(PortfolioColors.Surface)
-                .padding(horizontal = layoutInfo.horizontalPadding, vertical = 50.dp)
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(horizontal = layoutInfo.horizontalPadding, vertical = 32.dp)
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                SectionHeader(
-                    tag = "Get In Touch",
-                    title = "Let's Build Something Exceptional",
-                    subtitle = "Open to Android Lead, Senior Android, and Kotlin Multiplatform (KMP) opportunities or technical consulting."
-                )
+            SectionHeader(
+                eyebrow = "Get in Touch",
+                title = "Let's Build Something Exceptional",
+                subtitle = "Open to Senior Android, Android Lead, and Kotlin Multiplatform (KMP) roles, distributed team collaboration, or technical consulting."
+            )
 
-                if (layoutInfo.isExpanded) {
-                    // Desktop Side-by-Side: Contact Cards on Left, Education & Socials on Right
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(24.dp)
-                    ) {
-                        // Left: Direct Contact Card
-                        ContactCard(
-                            modifier = Modifier.weight(1.2f),
-                            uriHandler = uriHandler
-                        )
-
-                        // Right: Education & Additional Info
-                        Column(
-                            modifier = Modifier.weight(0.8f),
-                            verticalArrangement = Arrangement.spacedBy(18.dp)
-                        ) {
-                            EducationCard()
-                            SocialMediaGrid(uriHandler)
-                        }
-                    }
-                } else {
-                    // Mobile & Tablet Stacked
-                    Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
-                        ContactCard(
-                            modifier = Modifier.fillMaxWidth(),
-                            uriHandler = uriHandler
-                        )
-                        EducationCard()
-                        SocialMediaGrid(uriHandler)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(48.dp))
-                HorizontalDivider(color = PortfolioColors.OutlineVariant)
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Footer Bottom Note
+            if (layoutInfo.isExpanded) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    ContactCard(
+                        modifier = Modifier.weight(1.1f),
+                        uriHandler = uriHandler
+                    )
+
+                    Column(
+                        modifier = Modifier.weight(0.9f),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        EducationCard()
+                        PlayPortfolioCard(uriHandler = uriHandler)
+                        SocialMediaCard(uriHandler = uriHandler)
+                    }
+                }
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    ContactCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        uriHandler = uriHandler
+                    )
+                    EducationCard()
+                    PlayPortfolioCard(uriHandler = uriHandler)
+                    SocialMediaCard(uriHandler = uriHandler)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "© 2026 Iqbal Fauzi",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ) {
                     Text(
-                        text = "© 2026 Iqbal Fauzi. All rights reserved.",
-                        fontSize = 12.sp,
-                        color = PortfolioColors.TextMuted
+                        text = "Compose Multiplatform · Material 3",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
                     )
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(PortfolioColors.PrimaryContainer.copy(alpha = 0.35f))
-                            .padding(horizontal = 10.dp, vertical = 5.dp)
-                    ) {
-                        Text(
-                            text = "Crafted with Compose Multiplatform",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = PortfolioColors.OnPrimaryContainer
-                        )
-                    }
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ContactCard(
+private fun ContactCard(
     modifier: Modifier = Modifier,
-    uriHandler: androidx.compose.ui.platform.UriHandler
+    uriHandler: UriHandler
 ) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(PortfolioColors.SurfaceContainer)
-            .border(1.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(20.dp))
-            .padding(26.dp)
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
-                text = "DIRECT CONTACT CHANNELS",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                color = PortfolioColors.Primary,
-                letterSpacing = 1.sp
+                text = "Direct Contact",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = additionalProfileInfo.asyncCollaboration,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
-            ContactRow(
-                label = "Email Address",
-                value = profileInfo.email,
+            Spacer(modifier = Modifier.height(4.dp))
+
+            ContactListItem(
+                icon = Icons.Rounded.Mail,
+                overline = "Email",
+                headline = profileInfo.email,
                 onClick = { uriHandler.openUri("mailto:${profileInfo.email}") }
             )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            ContactRow(
-                label = "Phone / WhatsApp",
-                value = profileInfo.phone,
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            ContactListItem(
+                icon = Icons.Rounded.Call,
+                overline = "Phone / WhatsApp",
+                headline = profileInfo.phone,
                 onClick = { uriHandler.openUri(profileInfo.whatsappUrl) }
             )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            ContactRow(
-                label = "Location",
-                value = profileInfo.location,
-                onClick = {}
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            ContactListItem(
+                icon = Icons.Rounded.LocationOn,
+                overline = "Location",
+                headline = profileInfo.location,
+                onClick = null
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Button(
                     onClick = { uriHandler.openUri(profileInfo.whatsappUrl) },
-                    colors = ButtonDefaults.buttonColors(containerColor = PortfolioColors.Primary),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .interactiveHoverScale(targetScale = 1.04f)
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
                 ) {
-                    Text("Chat on WhatsApp", fontWeight = FontWeight.Bold)
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.Chat,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text("Chat on WhatsApp")
                 }
 
-                OutlinedButton(
+                FilledTonalButton(
                     onClick = { uriHandler.openUri(profileInfo.cvUrl) },
-                    border = BorderStroke(1.dp, PortfolioColors.Outline),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .interactiveHoverScale(targetScale = 1.04f)
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
                 ) {
-                    Text("Download CV", color = PortfolioColors.OnSurface, fontWeight = FontWeight.Bold)
+                    Icon(
+                        imageVector = Icons.Rounded.Description,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text("View CV")
                 }
             }
         }
@@ -205,122 +225,234 @@ fun ContactCard(
 }
 
 @Composable
-fun ContactRow(label: String, value: String, onClick: () -> Unit) {
-    Column(
+private fun ContactListItem(
+    icon: ImageVector,
+    overline: String,
+    headline: String,
+    onClick: (() -> Unit)?
+) {
+    ListItem(
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(PortfolioColors.SurfaceContainerHigh)
-            .interactiveHoverScale(targetScale = 1.02f)
-            .clickable { onClick() }
-            .padding(horizontal = 14.dp, vertical = 10.dp)
-    ) {
-        Text(
-            text = label,
-            fontSize = 10.sp,
-            color = PortfolioColors.OnSurfaceVariant,
-            fontFamily = FontFamily.Monospace
-        )
-        Text(
-            text = value,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = PortfolioColors.OnSurface
-        )
-    }
+            .clip(MaterialTheme.shapes.medium)
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(role = Role.Button, onClick = onClick)
+                } else {
+                    Modifier
+                }
+            ),
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        leadingContent = {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+        },
+        overlineContent = { Text(overline) },
+        headlineContent = {
+            Text(
+                text = headline,
+                style = MaterialTheme.typography.titleSmall
+            )
+        },
+        trailingContent = if (onClick != null) {
+            {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
+                    contentDescription = "Open $overline",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        } else {
+            null
+        }
+    )
 }
 
 @Composable
-fun EducationCard() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(PortfolioColors.SurfaceContainer)
-            .border(1.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(20.dp))
-            .padding(22.dp)
+private fun EducationCard() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Surface(
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Rounded.School,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+                Column {
+                    Text(
+                        text = "Education",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                    Text(
+                        text = educationInfo.degree,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
             Text(
-                text = "EDUCATION",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                color = PortfolioColors.Secondary,
-                letterSpacing = 1.sp
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = educationInfo.degree,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = PortfolioColors.OnSurface
-            )
-            Text(
-                text = "${educationInfo.institution} • ${educationInfo.location}",
-                fontSize = 13.sp,
-                color = PortfolioColors.Primary,
-                fontWeight = FontWeight.SemiBold
+                text = "${educationInfo.institution} · ${educationInfo.location}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = educationInfo.period,
-                fontFamily = FontFamily.Monospace,
-                fontSize = 11.sp,
-                color = PortfolioColors.TextMuted
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = educationInfo.description,
-                fontSize = 13.sp,
-                color = PortfolioColors.OnSurfaceVariant,
-                lineHeight = 19.sp
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
 
 @Composable
-fun SocialMediaGrid(uriHandler: androidx.compose.ui.platform.UriHandler) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(PortfolioColors.SurfaceContainer)
-            .border(1.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(20.dp))
-            .padding(22.dp)
+private fun PlayPortfolioCard(uriHandler: UriHandler) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
-                text = "CONNECT ACROSS PLATFORMS",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                color = PortfolioColors.TextMuted,
-                letterSpacing = 1.sp
+                text = "Google Play Portfolio",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.height(14.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                socialMediaList.take(5).forEach { social ->
-                    Box(
-                        modifier = Modifier
-                            .size(44.dp)
-                            .clip(CircleShape)
-                            .background(PortfolioColors.SurfaceContainerHigh)
-                            .border(1.dp, PortfolioColors.OutlineVariant, CircleShape)
-                            .interactiveHoverScale(targetScale = 1.15f)
-                            .clickable { uriHandler.openUri(social.url) }
-                            .padding(10.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(social.icon),
-                            contentDescription = social.name,
-                            modifier = Modifier.size(24.dp)
+            additionalProfileInfo.playStoreLinks.forEachIndexed { index, item ->
+                if (index > 0) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                }
+                ListItem(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable(role = Role.Button) { uriHandler.openUri(item.url) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                    leadingContent = {
+                        Surface(
+                            shape = MaterialTheme.shapes.small,
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.size(36.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Shop,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    },
+                    headlineContent = { Text(item.title, style = MaterialTheme.typography.titleSmall) },
+                    supportingContent = { Text(item.subtitle, style = MaterialTheme.typography.bodySmall) },
+                    trailingContent = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
+                            contentDescription = "Open ${item.title} on Google Play",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(18.dp)
                         )
+                    }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SocialMediaCard(uriHandler: UriHandler) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Connect Across Platforms",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
+                val badgeBg = if (isDark) {
+                    Color(0xFFEDF2EE)
+                } else {
+                    MaterialTheme.colorScheme.surfaceContainerHigh
+                }
+                socialMediaList.forEach { social ->
+                    Surface(
+                        onClick = { uriHandler.openUri(social.url) },
+                        shape = CircleShape,
+                        color = badgeBg,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .interactiveHoverScale(targetScale = 1.08f)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Image(
+                                painter = painterResource(social.icon),
+                                contentDescription = social.name,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
                     }
                 }
             }

@@ -1,43 +1,54 @@
 package com.uziro.portfolio.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.ExpandMore
+import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material.icons.rounded.Shop
+import androidx.compose.material.icons.rounded.Verified
+import androidx.compose.material.icons.rounded.Work
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,47 +61,40 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.uziro.portfolio.data.ExperienceItem
 import com.uziro.portfolio.data.MetricStat
 import com.uziro.portfolio.data.Project
 import com.uziro.portfolio.ui.animation.interactiveHoverScale
-import com.uziro.portfolio.ui.animation.rememberShimmerBrush
-import com.uziro.portfolio.ui.theme.PortfolioColors
+import com.uziro.portfolio.ui.theme.statusColors
 import org.jetbrains.compose.resources.painterResource
+import uziroportfolio.composeapp.generated.resources.Res
+import uziroportfolio.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 fun SectionHeader(
-    tag: String,
+    eyebrow: String,
     title: String,
     subtitle: String,
     modifier: Modifier = Modifier,
     alignCenter: Boolean = false
 ) {
-    val shimmerBrush = rememberShimmerBrush()
-
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = if (alignCenter) Alignment.CenterHorizontally else Alignment.Start
     ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(20.dp))
-                .background(PortfolioColors.PrimaryContainer.copy(alpha = 0.5f))
-                .border(BorderStroke(1.dp, shimmerBrush), RoundedCornerShape(20.dp))
-                .padding(horizontal = 14.dp, vertical = 6.dp)
+        Surface(
+            shape = MaterialTheme.shapes.small,
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         ) {
             Text(
-                text = tag.uppercase(),
-                fontFamily = FontFamily.Monospace,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                color = PortfolioColors.OnPrimaryContainer,
-                letterSpacing = 1.2.sp
+                text = eyebrow,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
             )
         }
 
@@ -98,86 +102,108 @@ fun SectionHeader(
 
         Text(
             text = title,
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Black,
-            color = PortfolioColors.OnSurface
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
             text = subtitle,
-            fontSize = 14.sp,
-            color = PortfolioColors.OnSurfaceVariant,
-            lineHeight = 22.sp
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.widthIn(max = 680.dp)
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
+/**
+ * Tonal M3 stat card cycling subtly across semantic container roles.
+ */
 @Composable
 fun StatCard(
     stat: MetricStat,
+    toneIndex: Int,
     modifier: Modifier = Modifier
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
+    val (containerColor, contentColor, accentColor) = when (toneIndex % 4) {
+        0 -> Triple(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.onPrimaryContainer,
+            MaterialTheme.colorScheme.primary
+        )
+        1 -> Triple(
+            MaterialTheme.colorScheme.secondaryContainer,
+            MaterialTheme.colorScheme.onSecondaryContainer,
+            MaterialTheme.colorScheme.secondary
+        )
+        2 -> Triple(
+            MaterialTheme.colorScheme.tertiaryContainer,
+            MaterialTheme.colorScheme.onTertiaryContainer,
+            MaterialTheme.colorScheme.tertiary
+        )
+        else -> Triple(
+            MaterialTheme.colorScheme.surfaceContainerHigh,
+            MaterialTheme.colorScheme.onSurface,
+            MaterialTheme.colorScheme.primary
+        )
+    }
 
-    val animatedBorderColor by animateColorAsState(
-        targetValue = if (isHovered) PortfolioColors.Secondary else PortfolioColors.OutlineVariant,
-        animationSpec = tween(300)
-    )
-
-    val animatedBgColor by animateColorAsState(
-        targetValue = if (isHovered) PortfolioColors.SurfaceContainerHigh else PortfolioColors.SurfaceContainer,
-        animationSpec = tween(300)
-    )
-
-    Box(
-        modifier = modifier
-            .interactiveHoverScale(targetScale = 1.03f)
-            .clip(RoundedCornerShape(20.dp))
-            .background(animatedBgColor)
-            .border(1.dp, animatedBorderColor, RoundedCornerShape(20.dp))
-            .padding(20.dp)
+    Card(
+        modifier = modifier.interactiveHoverScale(targetScale = 1.02f),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        )
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
                 text = stat.value,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Black,
-                color = PortfolioColors.Secondary,
-                fontFamily = FontFamily.Monospace
+                style = MaterialTheme.typography.headlineLarge,
+                color = contentColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = stat.label,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = PortfolioColors.OnSurface
+                style = MaterialTheme.typography.titleMedium,
+                color = contentColor
             )
-            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = stat.description,
-                fontSize = 12.sp,
-                color = PortfolioColors.OnSurfaceVariant,
-                lineHeight = 18.sp
+                style = MaterialTheme.typography.bodySmall,
+                color = contentColor.copy(alpha = 0.85f)
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(PortfolioColors.Primary.copy(alpha = 0.15f))
-                    .padding(horizontal = 10.dp, vertical = 4.dp)
+            Spacer(modifier = Modifier.weight(1f, fill = true))
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                contentColor = accentColor
             ) {
-                Text(
-                    text = "✦ ${stat.highlight}",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PortfolioColors.Primary
-                )
+                Row(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Verified,
+                        contentDescription = null,
+                        modifier = Modifier.size(13.dp)
+                    )
+                    Text(
+                        text = stat.highlight,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }
@@ -187,163 +213,171 @@ fun StatCard(
 @Composable
 fun ExperienceCard(
     experience: ExperienceItem,
+    initiallyExpanded: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    var isExpanded by remember { mutableStateOf(true) }
-    val rotateChevron by animateFloatAsState(
+    var isExpanded by remember { mutableStateOf(initiallyExpanded) }
+    val chevronRotation by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
-        animationSpec = tween(300)
+        animationSpec = tween(250)
     )
 
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
-
-    val borderColor by animateColorAsState(
-        targetValue = if (isHovered) PortfolioColors.Primary else PortfolioColors.OutlineVariant,
-        animationSpec = tween(300)
-    )
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(PortfolioColors.SurfaceContainer)
-            .border(1.dp, borderColor, RoundedCornerShape(20.dp))
-            .padding(22.dp)
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
-        Column {
-            // Header Row: Role, Company & Expand Toggle
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { isExpanded = !isExpanded },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = experience.role,
-                        fontSize = 19.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.OnSurface
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "${experience.company} • ${experience.location}",
-                        fontSize = 14.sp,
-                        color = PortfolioColors.Primary,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(24.dp)) {
+            val stackPeriod = maxWidth < 520.dp
 
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable { isExpanded = !isExpanded }
+                        .padding(vertical = 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(PortfolioColors.SurfaceContainerHigh)
-                            .border(0.5.dp, PortfolioColors.Outline, RoundedCornerShape(12.dp))
-                            .padding(horizontal = 12.dp, vertical = 5.dp)
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                        verticalAlignment = Alignment.Top
                     ) {
-                        Text(
-                            text = experience.period,
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = PortfolioColors.Secondary
-                        )
-                    }
-
-                    Text(
-                        text = "▼",
-                        fontSize = 12.sp,
-                        color = PortfolioColors.OnSurfaceVariant,
-                        modifier = Modifier.rotate(rotateChevron)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = experience.description,
-                fontSize = 13.sp,
-                color = PortfolioColors.OnSurfaceVariant,
-                lineHeight = 20.sp
-            )
-
-            // Metrics Badges
-            if (experience.metrics.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(12.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    experience.metrics.forEach { metric ->
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(PortfolioColors.EmeraldSuccess.copy(alpha = 0.15f))
-                                .border(0.5.dp, PortfolioColors.EmeraldSuccess.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
-                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                        Surface(
+                            shape = MaterialTheme.shapes.medium,
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(44.dp)
                         ) {
-                            Text(
-                                text = "★ $metric",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = PortfolioColors.EmeraldSuccess
-                            )
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Work,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                            }
                         }
-                    }
-                }
-            }
 
-            // Animated Expandable Content
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            ) {
-                Column {
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Achievements Bullet List
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        experience.achievements.forEach { achievement ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalAlignment = Alignment.Top
-                            ) {
-                                Text(
-                                    text = "▹",
-                                    color = PortfolioColors.Primary,
-                                    fontWeight = FontWeight.Black,
-                                    fontSize = 14.sp
-                                )
-                                Text(
-                                    text = achievement,
-                                    fontSize = 13.sp,
-                                    color = PortfolioColors.OnSurface,
-                                    lineHeight = 20.sp
-                                )
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(
+                                text = experience.role,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "${experience.company} · ${experience.location}",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            if (stackPeriod) {
+                                Spacer(modifier = Modifier.height(2.dp))
+                                ExperiencePeriodPill(period = experience.period)
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(18.dp))
-
-                    // Tech Stack Flow Row
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        experience.technologies.forEach { tech ->
-                            TechChip(text = tech)
+                        if (!stackPeriod) {
+                            ExperiencePeriodPill(period = experience.period)
+                        }
+
+                        IconButton(onClick = { isExpanded = !isExpanded }) {
+                            Icon(
+                                imageVector = Icons.Rounded.ExpandMore,
+                                contentDescription = if (isExpanded) "Collapse details" else "Expand details",
+                                modifier = Modifier.rotate(chevronRotation),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = experience.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                if (experience.metrics.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(14.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        experience.metrics.forEach { metric ->
+                            TonalMetricBadge(text = metric)
+                        }
+                    }
+                }
+
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        if (experience.phases.isNotEmpty()) {
+                            Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
+                                experience.phases.forEachIndexed { phaseIdx, phase ->
+                                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                        if (stackPeriod) {
+                                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                                Text(
+                                                    text = phase.title,
+                                                    style = MaterialTheme.typography.titleSmall,
+                                                    color = MaterialTheme.colorScheme.primary
+                                                )
+                                                PhasePeriodBadge(period = phase.period, isPrimary = phaseIdx == 0)
+                                            }
+                                        } else {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = phase.title,
+                                                    style = MaterialTheme.typography.titleSmall,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .padding(end = 12.dp)
+                                                )
+                                                PhasePeriodBadge(period = phase.period, isPrimary = phaseIdx == 0)
+                                            }
+                                        }
+                                        AchievementList(achievements = phase.achievements)
+                                    }
+                                }
+                            }
+                        } else {
+                            AchievementList(achievements = experience.achievements)
+                        }
+
+                        Spacer(modifier = Modifier.height(18.dp))
+
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            experience.technologies.forEach { tech ->
+                                TonalTag(text = tech)
+                            }
                         }
                     }
                 }
@@ -353,28 +387,130 @@ fun ExperienceCard(
 }
 
 @Composable
-fun TechChip(
-    text: String,
-    modifier: Modifier = Modifier,
-    highlight: Boolean = false
+private fun PhasePeriodBadge(
+    period: String,
+    isPrimary: Boolean
 ) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(if (highlight) PortfolioColors.Primary.copy(alpha = 0.2f) else PortfolioColors.SurfaceContainerHigh)
-            .border(
-                0.5.dp,
-                if (highlight) PortfolioColors.Primary else PortfolioColors.OutlineVariant,
-                RoundedCornerShape(8.dp)
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        color = if (isPrimary) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHigh
+        },
+        contentColor = if (isPrimary) {
+            MaterialTheme.colorScheme.onPrimaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
+    ) {
+        Text(
+            text = period,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+        )
+    }
+}
+
+@Composable
+private fun ExperiencePeriodPill(period: String) {
+    Surface(
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Schedule,
+                contentDescription = null,
+                modifier = Modifier.size(13.dp)
             )
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            Text(
+                text = period,
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+    }
+}
+
+@Composable
+private fun AchievementList(achievements: List<String>) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        achievements.forEach { achievement ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.Top
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .padding(top = 2.dp)
+                        .size(16.dp)
+                )
+                Text(
+                    text = achievement,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun TonalMetricBadge(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.small,
+        color = MaterialTheme.statusColors.successContainer,
+        contentColor = MaterialTheme.statusColors.onSuccessContainer
     ) {
         Text(
             text = text,
-            fontFamily = FontFamily.Monospace,
-            fontSize = 10.sp,
+            style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.SemiBold,
-            color = if (highlight) PortfolioColors.OnPrimaryContainer else PortfolioColors.OnSurfaceVariant
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+        )
+    }
+}
+
+/**
+ * Non-interactive tonal tag for technology stack / skills (distinct from interactive FilterChips).
+ */
+@Composable
+fun TonalTag(
+    text: String,
+    modifier: Modifier = Modifier,
+    emphasized: Boolean = false
+) {
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.small,
+        color = if (emphasized) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        },
+        contentColor = if (emphasized) {
+            MaterialTheme.colorScheme.onPrimaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
         )
     }
 }
@@ -389,282 +525,158 @@ fun ProjectCard(
     val uriHandler = LocalUriHandler.current
 
     Card(
+        onClick = onViewDetail,
         modifier = modifier
             .fillMaxWidth()
-            .interactiveHoverScale(targetScale = 1.025f)
-            .clip(RoundedCornerShape(20.dp))
-            .border(1.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(20.dp))
-            .clickable { onViewDetail() },
-        colors = CardDefaults.cardColors(containerColor = PortfolioColors.SurfaceContainer)
+            .interactiveHoverScale(targetScale = 1.015f),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
-        Column {
-            // Project Image Banner
+        val isLogoArtwork = project.image == Res.drawable.compose_multiplatform
+        Column(modifier = Modifier.fillMaxWidth()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(170.dp)
-                    .background(Color(0xFF0C1322))
+                    .height(176.dp)
+                    .background(
+                        if (isLogoArtwork) {
+                            MaterialTheme.colorScheme.surfaceContainerHighest
+                        } else {
+                            MaterialTheme.colorScheme.surfaceContainerHigh
+                        }
+                    )
             ) {
-                Image(
-                    painter = painterResource(project.image),
-                    contentDescription = project.title,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-                // Category Pill Badge
-                Box(
+                if (isLogoArtwork) {
+                    Image(
+                        painter = painterResource(project.image),
+                        contentDescription = project.title,
+                        modifier = Modifier
+                            .size(96.dp)
+                            .align(Alignment.Center),
+                        contentScale = ContentScale.Fit
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(project.image),
+                        contentDescription = project.title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(12.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(PortfolioColors.Background.copy(alpha = 0.85f))
-                        .border(0.5.dp, PortfolioColors.Primary, RoundedCornerShape(8.dp))
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                        .padding(14.dp)
                 ) {
                     Text(
                         text = project.category,
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.Primary
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
                     )
                 }
             }
 
-            // Project Info Content
-            Column(modifier = Modifier.padding(18.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 Text(
                     text = project.title,
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PortfolioColors.OnSurface
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-
-                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
                     text = project.overview,
-                    fontSize = 13.sp,
-                    color = PortfolioColors.OnSurfaceVariant,
-                    lineHeight = 19.sp,
-                    maxLines = 3
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    minLines = 3,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Tech tags (first 3)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     project.techStack.take(3).forEach { tech ->
-                        TechChip(text = tech.substringBefore(":"))
+                        TonalTag(text = tech.substringBefore(" ("))
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(2.dp))
 
-                // Action Buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Inspect Architecture ➔",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.Secondary,
-                        modifier = Modifier.clickable { onViewDetail() }
-                    )
+                    TextButton(
+                        onClick = onViewDetail,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
+                        modifier = Modifier.defaultMinSize(minHeight = 40.dp)
+                    ) {
+                        Text("Case study")
+                        Spacer(modifier = Modifier.size(4.dp))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
 
                     if (project.playStoreUrl != null) {
-                        Button(
+                        FilledTonalButton(
                             onClick = { uriHandler.openUri(project.playStoreUrl) },
-                            colors = ButtonDefaults.buttonColors(containerColor = PortfolioColors.Primary),
-                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                            shape = RoundedCornerShape(10.dp)
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                            modifier = Modifier.defaultMinSize(minHeight = 40.dp)
                         ) {
-                            Text("Play Store", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Icon(
+                                imageVector = Icons.Rounded.Shop,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text("Play Store", maxLines = 1)
                         }
                     } else if (project.githubUrl != null) {
                         OutlinedButton(
                             onClick = { uriHandler.openUri(project.githubUrl) },
-                            border = BorderStroke(1.dp, PortfolioColors.Primary),
-                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                            shape = RoundedCornerShape(10.dp)
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                            modifier = Modifier.defaultMinSize(minHeight = 40.dp)
                         ) {
-                            Text("GitHub", fontSize = 11.sp, color = PortfolioColors.Primary, fontWeight = FontWeight.Bold)
+                            Icon(
+                                imageVector = Icons.Rounded.Code,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text("GitHub", maxLines = 1)
                         }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ProjectDetailDialog(
-    project: Project,
-    onDismiss: () -> Unit
-) {
-    val uriHandler = LocalUriHandler.current
-
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
-                .border(1.dp, PortfolioColors.Primary, RoundedCornerShape(24.dp)),
-            color = PortfolioColors.Surface
-        ) {
-            Column(
-                modifier = Modifier.padding(26.dp)
-            ) {
-                // Header
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = project.title,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Black,
-                            color = PortfolioColors.OnSurface
-                        )
-                        Text(
-                            text = project.category,
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 12.sp,
-                            color = PortfolioColors.Primary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    Text(
-                        text = "✕",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.OnSurfaceVariant,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .clickable { onDismiss() }
-                            .padding(6.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(14.dp))
-                HorizontalDivider(color = PortfolioColors.OutlineVariant)
-                Spacer(modifier = Modifier.height(14.dp))
-
-                Text(
-                    text = project.overview,
-                    fontSize = 14.sp,
-                    color = PortfolioColors.OnSurfaceVariant,
-                    lineHeight = 22.sp
-                )
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                // Tech Stack
-                Text(
-                    text = "TECHNICAL ARCHITECTURE & STACK",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PortfolioColors.Secondary,
-                    letterSpacing = 1.sp
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    project.techStack.forEach { tech ->
-                        Text(
-                            text = "• $tech",
-                            fontSize = 13.sp,
-                            color = PortfolioColors.OnSurface,
-                            lineHeight = 19.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                // Key Impact & Results
-                Text(
-                    text = "MEASURED IMPACT & STABILITY",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PortfolioColors.EmeraldSuccess,
-                    letterSpacing = 1.sp
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    project.impact.forEach { item ->
-                        Text(
-                            text = "★ $item",
-                            fontSize = 13.sp,
-                            color = PortfolioColors.OnSurface,
-                            lineHeight = 19.sp
-                        )
-                    }
-                }
-
-                if (project.nextPlan.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "ROADMAP & NEXT MILESTONES",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.AmberAccent,
-                        letterSpacing = 1.sp
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    project.nextPlan.forEach { plan ->
-                        Text(
-                            text = "→ $plan",
-                            fontSize = 13.sp,
-                            color = PortfolioColors.OnSurfaceVariant,
-                            lineHeight = 19.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Footer CTA Buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    if (project.playStoreUrl != null) {
-                        Button(
-                            onClick = { uriHandler.openUri(project.playStoreUrl) },
-                            colors = ButtonDefaults.buttonColors(containerColor = PortfolioColors.Primary),
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text("Play Store", fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    if (project.githubUrl != null) {
+                    } else if (project.url != null) {
                         OutlinedButton(
-                            onClick = { uriHandler.openUri(project.githubUrl) },
-                            border = BorderStroke(1.dp, PortfolioColors.Primary),
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp)
+                            onClick = { uriHandler.openUri(project.url) },
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                            modifier = Modifier.defaultMinSize(minHeight = 40.dp)
                         ) {
-                            Text("GitHub", color = PortfolioColors.Primary, fontWeight = FontWeight.Bold)
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text("Open", maxLines = 1)
                         }
-                    }
-                    Button(
-                        onClick = onDismiss,
-                        colors = ButtonDefaults.buttonColors(containerColor = PortfolioColors.SurfaceContainerHigh),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text("Close", color = PortfolioColors.OnSurface)
                     }
                 }
             }

@@ -7,10 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * Material 3 Window Size Classes aligned with Android Adaptive Guidance.
+ */
 enum class WindowSizeClass {
-    COMPACT, // Phone (< 640dp)
-    MEDIUM,  // Tablet / Foldable (640dp - 1024dp)
-    EXPANDED // Desktop / Large Screen (> 1024dp)
+    COMPACT,  // < 600dp
+    MEDIUM,   // 600dp - 839dp
+    EXPANDED  // >= 840dp
 }
 
 data class AdaptiveLayoutInfo(
@@ -20,6 +23,7 @@ data class AdaptiveLayoutInfo(
     val isCompact: Boolean,
     val isMedium: Boolean,
     val isExpanded: Boolean,
+    val isLarge: Boolean,
     val horizontalPadding: Dp,
     val gridColumns: Int
 )
@@ -34,21 +38,21 @@ fun AdaptiveBox(
         val height = maxHeight
 
         val sizeClass = when {
-            width < 640.dp -> WindowSizeClass.COMPACT
-            width < 1024.dp -> WindowSizeClass.MEDIUM
+            width < 600.dp -> WindowSizeClass.COMPACT
+            width < 840.dp -> WindowSizeClass.MEDIUM
             else -> WindowSizeClass.EXPANDED
         }
 
         val horizontalPadding = when (sizeClass) {
             WindowSizeClass.COMPACT -> 16.dp
-            WindowSizeClass.MEDIUM -> 32.dp
-            WindowSizeClass.EXPANDED -> 64.dp
+            WindowSizeClass.MEDIUM -> 24.dp
+            WindowSizeClass.EXPANDED -> 32.dp
         }
 
-        val gridColumns = when (sizeClass) {
-            WindowSizeClass.COMPACT -> 1
-            WindowSizeClass.MEDIUM -> 2
-            WindowSizeClass.EXPANDED -> 3
+        val gridColumns = when {
+            width < 600.dp -> 1
+            width < 960.dp -> 2
+            else -> 3
         }
 
         val info = AdaptiveLayoutInfo(
@@ -58,6 +62,7 @@ fun AdaptiveBox(
             isCompact = sizeClass == WindowSizeClass.COMPACT,
             isMedium = sizeClass == WindowSizeClass.MEDIUM,
             isExpanded = sizeClass == WindowSizeClass.EXPANDED,
+            isLarge = width >= 1100.dp,
             horizontalPadding = horizontalPadding,
             gridColumns = gridColumns
         )
