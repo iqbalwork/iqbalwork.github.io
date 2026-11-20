@@ -15,11 +15,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.LockOpen
+import androidx.compose.material.icons.rounded.Sensors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -37,136 +46,162 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.uziro.portfolio.ui.theme.PortfolioColors
+import com.uziro.portfolio.ui.theme.statusColors
 
 @Composable
 fun BoboboxIotPodDemo(modifier: Modifier = Modifier) {
     var isDoorUnlocked by remember { mutableStateOf(false) }
     var selectedColorIndex by remember { mutableStateOf(0) }
     var brightness by remember { mutableStateOf(0.75f) }
-    var mqttLog by remember { mutableStateOf("MQTT Client: Connected to tcp://broker.bobobox.internal:8883 (QoS 1)") }
+    var mqttLog by remember {
+        mutableStateOf("MQTT Client: Connected to broker.bobobox.internal:8883 (QoS 1)")
+    }
 
     val podColors = listOf(
-        Color(0xFF00F0FF) to "Cyber Cyan",
-        Color(0xFF8F7BFF) to "Sleep Violet",
-        Color(0xFFFF9900) to "Sunset Warm",
-        Color(0xFF00FF9D) to "Zen Emerald"
+        Color(0xFF00C4CC) to "Cyber Cyan",
+        Color(0xFF7B61FF) to "Sleep Violet",
+        Color(0xFFFF8A00) to "Sunset Warm",
+        Color(0xFF00B87A) to "Zen Emerald"
     )
 
     val activeLightColor = podColors[selectedColorIndex].first
     val animatedLightColor by animateColorAsState(
         targetValue = activeLightColor.copy(alpha = brightness),
-        animationSpec = tween(400)
+        animationSpec = tween(350)
     )
 
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(PortfolioColors.SurfaceContainer)
-            .border(1.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(20.dp))
-            .padding(20.dp)
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text(
-                        text = "LIVE DEMO // BOBOBOX IOT SMART POD",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.Primary,
-                        letterSpacing = 1.sp
-                    )
-                    Text(
-                        text = "MQTT Protocol Hardware Controller (Doors & Ambiance)",
-                        fontSize = 12.sp,
-                        color = PortfolioColors.OnSurfaceVariant
-                    )
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = MaterialTheme.shapes.medium,
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Rounded.Sensors,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                    Column {
+                        Text(
+                            text = "Bobobox IoT Smart Pod",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = "MQTT protocol controller (doors & ambiance)",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(PortfolioColors.EmeraldSuccess.copy(alpha = 0.15f))
-                        .border(1.dp, PortfolioColors.EmeraldSuccess.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
+
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.statusColors.successContainer,
+                    contentColor = MaterialTheme.statusColors.onSuccessContainer
                 ) {
                     Text(
-                        text = "MQTT 99.9% LIVE",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.EmeraldSuccess
+                        text = "MQTT Live",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Simulated Smart Pod Room Light Canvas
+            // Smart Pod Room Light Preview Canvas
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
-                    .clip(RoundedCornerShape(14.dp))
+                    .height(144.dp)
+                    .clip(MaterialTheme.shapes.large)
                     .background(
                         Brush.radialGradient(
                             listOf(
                                 animatedLightColor,
                                 animatedLightColor.copy(alpha = 0.25f),
-                                Color(0xFF0A0F1D)
+                                Color(0xFF0E141C)
                             )
                         )
                     )
-                    .border(1.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(14.dp))
-                    .padding(14.dp)
+                    .padding(16.dp)
             ) {
-                Column(
-                    modifier = Modifier.align(Alignment.TopStart)
-                ) {
+                Column(modifier = Modifier.align(Alignment.TopStart)) {
                     Text(
-                        text = "POD ROOM #402",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
+                        text = "POD #402",
+                        style = MaterialTheme.typography.titleSmall,
                         color = Color.White
                     )
                     Text(
-                        text = "Ambiance: ${podColors[selectedColorIndex].second} • ${(brightness * 100).toInt()}% Brightness",
-                        fontSize = 11.sp,
+                        text = "${podColors[selectedColorIndex].second} · ${(brightness * 100).toInt()}% Brightness",
+                        style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFFE2E8F0)
                     )
                 }
 
-                // Door lock state badge
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(if (isDoorUnlocked) PortfolioColors.EmeraldSuccess.copy(alpha = 0.25f) else PortfolioColors.RoseAlert.copy(alpha = 0.25f))
-                        .border(1.dp, if (isDoorUnlocked) PortfolioColors.EmeraldSuccess else PortfolioColors.RoseAlert, RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                Surface(
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    shape = CircleShape,
+                    color = if (isDoorUnlocked) {
+                        MaterialTheme.statusColors.successContainer
+                    } else {
+                        MaterialTheme.colorScheme.errorContainer
+                    },
+                    contentColor = if (isDoorUnlocked) {
+                        MaterialTheme.statusColors.onSuccessContainer
+                    } else {
+                        MaterialTheme.colorScheme.onErrorContainer
+                    }
                 ) {
-                    Text(
-                        text = if (isDoorUnlocked) "DOOR: UNLOCKED [OPEN]" else "DOOR: LOCKED [SECURED]",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isDoorUnlocked) PortfolioColors.EmeraldSuccess else PortfolioColors.RoseAlert
-                    )
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isDoorUnlocked) Icons.Rounded.LockOpen else Icons.Rounded.Lock,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Text(
+                            text = if (isDoorUnlocked) "Door unlocked" else "Door locked",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Interactive Controls Row
+            // Interactive M3 Switch + Color Presets
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -174,110 +209,121 @@ fun BoboboxIotPodDemo(modifier: Modifier = Modifier) {
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        text = "Door Access:",
-                        fontSize = 13.sp,
-                        color = PortfolioColors.OnSurface,
-                        fontWeight = FontWeight.Medium
+                        text = "Pod door",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Switch(
                         checked = isDoorUnlocked,
                         onCheckedChange = { checked ->
                             isDoorUnlocked = checked
-                            mqttLog = if (checked)
-                                "MQTT pub: bobo/pod-402/door/cmd {\"action\":\"UNLOCK\",\"token\":\"AUTH_VALID\"} -> ACK 200 (12ms)"
-                            else
-                                "MQTT pub: bobo/pod-402/door/cmd {\"action\":\"LOCK\",\"solenoid\":\"ENGAGED\"} -> ACK 200 (9ms)"
+                            mqttLog = if (checked) {
+                                "MQTT pub: bobo/pod-402/door {\"action\":\"UNLOCK\"} -> ACK 200 (12ms)"
+                            } else {
+                                "MQTT pub: bobo/pod-402/door {\"action\":\"LOCK\"} -> ACK 200 (9ms)"
+                            }
                         },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = PortfolioColors.EmeraldSuccess,
-                            checkedTrackColor = PortfolioColors.EmeraldSuccess.copy(alpha = 0.4f)
-                        )
+                        thumbContent = {
+                            Icon(
+                                imageVector = if (isDoorUnlocked) Icons.Rounded.LockOpen else Icons.Rounded.Lock,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize)
+                            )
+                        }
                     )
                 }
 
-                // Color Selector Dots
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Light:",
-                        fontSize = 12.sp,
-                        color = PortfolioColors.OnSurfaceVariant
-                    )
                     podColors.forEachIndexed { index, (color, name) ->
+                        val isSelected = selectedColorIndex == index
                         Box(
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(38.dp)
                                 .clip(CircleShape)
-                                .background(color)
-                                .border(
-                                    if (selectedColorIndex == index) 2.5.dp else 0.dp,
-                                    Color.White,
-                                    CircleShape
-                                )
-                                .clickable {
+                                .semantics { selected = isSelected }
+                                .clickable(role = Role.RadioButton) {
                                     selectedColorIndex = index
-                                    mqttLog = "MQTT pub: bobo/pod-402/light/preset {\"hex\":\"#${color.value.toString(16).take(6)}\",\"name\":\"$name\"}"
+                                    mqttLog = "MQTT pub: bobo/pod-402/light {\"preset\":\"$name\"}"
                                 }
-                        )
+                                .padding(4.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .clip(CircleShape)
+                                    .background(color)
+                                    .border(
+                                        width = if (isSelected) 2.5.dp else 1.dp,
+                                        color = if (isSelected) {
+                                            MaterialTheme.colorScheme.onSurface
+                                        } else {
+                                            MaterialTheme.colorScheme.outlineVariant
+                                        },
+                                        shape = CircleShape
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (isSelected) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Check,
+                                        contentDescription = "$name selected",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Brightness Slider
+            // M3 Dimmer Slider
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Dimmer:",
-                    fontSize = 12.sp,
-                    color = PortfolioColors.OnSurfaceVariant
+                    text = "Dimmer",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Slider(
                     value = brightness,
                     onValueChange = {
                         brightness = it
-                        mqttLog = "MQTT pub: bobo/pod-402/light/dimmer {\"duty_cycle\":${(it * 100).toInt()}%}"
+                        mqttLog = "MQTT pub: bobo/pod-402/light/dimmer {\"duty\":${(it * 100).toInt()}%}"
                     },
-                    modifier = Modifier.weight(1f),
-                    colors = SliderDefaults.colors(
-                        thumbColor = PortfolioColors.Primary,
-                        activeTrackColor = PortfolioColors.Primary
-                    )
+                    modifier = Modifier.weight(1f)
                 )
                 Text(
                     text = "${(brightness * 100).toInt()}%",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 11.sp,
-                    color = PortfolioColors.OnSurface
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // MQTT Terminal Console
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(PortfolioColors.SurfaceContainerLowest)
-                    .border(0.5.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(8.dp))
-                    .padding(10.dp)
+            // MQTT Console Output
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                contentColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = "> $mqttLog",
                     fontFamily = FontFamily.Monospace,
-                    fontSize = 10.sp,
-                    color = PortfolioColors.Secondary,
-                    maxLines = 2
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 2,
+                    modifier = Modifier.padding(12.dp)
                 )
             }
         }
@@ -286,182 +332,216 @@ fun BoboboxIotPodDemo(modifier: Modifier = Modifier) {
 
 @Composable
 fun SpatialVerseHighlightDemo(modifier: Modifier = Modifier) {
-    var activeVerse by remember { mutableStateOf(2) }
+    var activeVerse by remember { mutableStateOf(1) }
     var deviceScale by remember { mutableStateOf(1.0f) }
 
     val sampleVerses = listOf(
-        "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" to "1. In the name of Allah, Most Gracious, Most Merciful",
-        "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ" to "2. Praise be to Allah, the Lord of the worlds",
-        "الرَّحْمَٰنِ الرَّحِيمِ" to "3. The Most Gracious, the Most Merciful",
-        "مَالِكِ يَوْمِ الدِّينِ" to "4. Master of the Day of Judgment"
+        Triple("Al-Fatihah 1:1", "Bismillahir-Rahmanir-Rahim", 84),
+        Triple("Al-Fatihah 1:2", "Alhamdulillahi Rabbil-'Alamin", 168),
+        Triple("Al-Fatihah 1:3", "Ar-Rahmanir-Rahim", 252),
+        Triple("Al-Fatihah 1:4", "Maliki Yawmid-Din", 336)
     )
 
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(PortfolioColors.SurfaceContainer)
-            .border(1.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(20.dp))
-            .padding(20.dp)
+    val highlightColor = MaterialTheme.colorScheme.primary
+    val inactiveStrokeColor = MaterialTheme.colorScheme.outlineVariant
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text(
-                        text = "LIVE DEMO // SPATIAL VERSE HIGHLIGHTING",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.Secondary,
-                        letterSpacing = 1.sp
-                    )
-                    Text(
-                        text = "Al Qosbah Dynamic X/Y Coordinate Scaling Canvas",
-                        fontSize = 12.sp,
-                        color = PortfolioColors.OnSurfaceVariant
-                    )
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = MaterialTheme.shapes.medium,
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Rounded.AutoAwesome,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                    Column {
+                        Text(
+                            text = "Spatial Verse Highlighting",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = "Al Qosbah dynamic X/Y coordinate scaling canvas",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(PortfolioColors.Secondary.copy(alpha = 0.15f))
-                        .border(1.dp, PortfolioColors.Secondary.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
+
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ) {
                     Text(
-                        text = "PIXEL-PERFECT",
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PortfolioColors.Secondary
+                        text = "Pixel-Perfect",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Canvas rendering the dynamic bounding box calculation
-            Box(
+            // Spatial Highlighting Canvas
+            Surface(
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color(0xFF0B101E))
-                    .border(1.dp, PortfolioColors.OutlineVariant, RoundedCornerShape(14.dp))
-                    .padding(10.dp)
+                    .height(144.dp)
             ) {
-                Canvas(modifier = Modifier.matchParentSize()) {
-                    val w = size.width
-                    val h = size.height
-                    val rowHeight = h / 4f
+                Box(modifier = Modifier.padding(10.dp)) {
+                    Canvas(modifier = Modifier.matchParentSize()) {
+                        val w = size.width
+                        val h = size.height
+                        val rowHeight = h / 4f
+                        val inset = (10f * deviceScale).coerceIn(4f, w * 0.16f)
 
-                    // Draw all verse bounding slots
-                    for (i in 0..3) {
-                        val topY = i * rowHeight
-                        val isSelected = i == activeVerse
+                        for (i in 0..3) {
+                            val topY = i * rowHeight
+                            val isSelected = i == activeVerse
 
-                        if (isSelected) {
-                            // Draw dynamic highlight background
-                            drawRoundRect(
-                                color = PortfolioColors.Secondary.copy(alpha = 0.25f),
-                                topLeft = Offset(10f * deviceScale, topY + 4f),
-                                size = Size(w - (20f * deviceScale), rowHeight - 8f),
-                                cornerRadius = CornerRadius(8f, 8f)
-                            )
-                            // Draw glowing boundary stroke
-                            drawRoundRect(
-                                color = PortfolioColors.Secondary,
-                                topLeft = Offset(10f * deviceScale, topY + 4f),
-                                size = Size(w - (20f * deviceScale), rowHeight - 8f),
-                                cornerRadius = CornerRadius(8f, 8f),
-                                style = Stroke(width = 1.5f)
-                            )
-                        } else {
-                            // Inactive slot guide
-                            drawRoundRect(
-                                color = Color(0xFF1E293B).copy(alpha = 0.5f),
-                                topLeft = Offset(10f * deviceScale, topY + 4f),
-                                size = Size(w - (20f * deviceScale), rowHeight - 8f),
-                                cornerRadius = CornerRadius(8f, 8f),
-                                style = Stroke(width = 0.5f)
-                            )
+                            if (isSelected) {
+                                drawRoundRect(
+                                    color = highlightColor.copy(alpha = 0.16f),
+                                    topLeft = Offset(inset, topY + 3f),
+                                    size = Size(w - (inset * 2f), rowHeight - 6f),
+                                    cornerRadius = CornerRadius(12f, 12f)
+                                )
+                                drawRoundRect(
+                                    color = highlightColor,
+                                    topLeft = Offset(inset, topY + 3f),
+                                    size = Size(w - (inset * 2f), rowHeight - 6f),
+                                    cornerRadius = CornerRadius(12f, 12f),
+                                    style = Stroke(width = 2f)
+                                )
+                            } else {
+                                drawRoundRect(
+                                    color = inactiveStrokeColor.copy(alpha = 0.45f),
+                                    topLeft = Offset(inset, topY + 3f),
+                                    size = Size(w - (inset * 2f), rowHeight - 6f),
+                                    cornerRadius = CornerRadius(12f, 12f),
+                                    style = Stroke(width = 1f)
+                                )
+                            }
                         }
                     }
-                }
 
-                // Overlay Text Content
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.SpaceAround
-                ) {
-                    sampleVerses.forEachIndexed { index, (arabic, translation) ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(30.dp)
-                                .clickable { activeVerse = index }
-                                .padding(horizontal = 14.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = translation,
-                                fontSize = 11.sp,
-                                color = if (index == activeVerse) Color.White else PortfolioColors.OnSurfaceVariant,
-                                fontWeight = if (index == activeVerse) FontWeight.Bold else FontWeight.Normal
-                            )
-                            Text(
-                                text = arabic,
-                                fontSize = 12.sp,
-                                color = if (index == activeVerse) PortfolioColors.Secondary else PortfolioColors.OnSurfaceVariant,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.SpaceAround
+                    ) {
+                        sampleVerses.forEachIndexed { index, (ref, verseText, baseY) ->
+                            val isSelected = index == activeVerse
+                            val scaledX = (120 * deviceScale).toInt()
+                            val scaledY = (baseY * deviceScale).toInt()
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(31.dp)
+                                    .clip(MaterialTheme.shapes.small)
+                                    .clickable { activeVerse = index }
+                                    .padding(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "${index + 1}. $verseText",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                    color = if (isSelected) {
+                                        MaterialTheme.colorScheme.onSurface
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                    },
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(
+                                    text = "$ref · (${scaledX}, ${scaledY})",
+                                    fontFamily = FontFamily.Monospace,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Medium,
+                                    color = if (isSelected) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                    },
+                                    maxLines = 1
+                                )
+                            }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Scaling Slider Demo
+            // Screen DPI Scaling Slider
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Screen DPI Scaling:",
-                    fontSize = 12.sp,
-                    color = PortfolioColors.OnSurfaceVariant
+                    text = "DPI scale",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Slider(
                     value = deviceScale,
                     onValueChange = { deviceScale = it },
                     valueRange = 0.6f..1.4f,
-                    modifier = Modifier.weight(1f),
-                    colors = SliderDefaults.colors(
-                        thumbColor = PortfolioColors.Secondary,
-                        activeTrackColor = PortfolioColors.Secondary
-                    )
+                    modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = "${(deviceScale * 100).toInt()}% Scale",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 11.sp,
-                    color = PortfolioColors.OnSurface
+                    text = "${(deviceScale * 100).toInt()}%",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
-            // Calculation formula footer
-            Text(
-                text = "TargetBox = Rect(x_orig * (${deviceScale.toString().take(4)}f), y_orig * (${deviceScale.toString().take(4)}f), w_orig * scaleX, h_orig * scaleY)",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
-                color = PortfolioColors.TextMuted
-            )
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                val formattedScale = ((deviceScale * 100).toInt() / 100.0).toString()
+                val activeBaseY = sampleVerses[activeVerse].third
+                Text(
+                    text = "Rect(x=120*$formattedScale, y=$activeBaseY*$formattedScale, scale=${(deviceScale * 100).toInt()}%)",
+                    fontFamily = FontFamily.Monospace,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 2,
+                    modifier = Modifier.padding(12.dp)
+                )
+            }
         }
     }
 }

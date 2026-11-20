@@ -1,9 +1,7 @@
 package com.uziro.portfolio.data
 
-import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.DrawableResource
 
-@Serializable
 data class ProfileInfo(
     val name: String,
     val title: String,
@@ -14,10 +12,10 @@ data class ProfileInfo(
     val whatsappUrl: String,
     val cvUrl: String,
     val linkedinUrl: String,
-    val githubUrl: String
+    val githubUrl: String,
+    val portfolioUrl: String
 )
 
-@Serializable
 data class MetricStat(
     val value: String,
     val label: String,
@@ -25,7 +23,12 @@ data class MetricStat(
     val highlight: String
 )
 
-@Serializable
+data class ExperiencePhase(
+    val title: String,
+    val period: String,
+    val achievements: List<String>
+)
+
 data class ExperienceItem(
     val company: String,
     val role: String,
@@ -33,20 +36,19 @@ data class ExperienceItem(
     val location: String,
     val type: String = "Full Time",
     val description: String,
-    val achievements: List<String>,
+    val achievements: List<String> = emptyList(),
+    val phases: List<ExperiencePhase> = emptyList(),
     val technologies: List<String>,
     val metrics: List<String> = emptyList()
 )
 
-@Serializable
 data class SkillCategory(
     val name: String,
-    val iconName: String,
+    val iconKey: String,
     val skills: List<String>,
     val highlight: String
 )
 
-@Serializable
 data class EducationItem(
     val degree: String,
     val institution: String,
@@ -55,7 +57,17 @@ data class EducationItem(
     val description: String
 )
 
-@Serializable
+data class PlayPortfolioLink(
+    val title: String,
+    val subtitle: String,
+    val url: String
+)
+
+data class AdditionalProfileInfo(
+    val asyncCollaboration: String,
+    val playStoreLinks: List<PlayPortfolioLink>
+)
+
 data class Project(
     val title: String,
     val category: String = "Mobile",

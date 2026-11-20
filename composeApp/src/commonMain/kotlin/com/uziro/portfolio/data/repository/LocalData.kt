@@ -1,8 +1,11 @@
 package com.uziro.portfolio.data.repository
 
+import com.uziro.portfolio.data.AdditionalProfileInfo
 import com.uziro.portfolio.data.EducationItem
 import com.uziro.portfolio.data.ExperienceItem
+import com.uziro.portfolio.data.ExperiencePhase
 import com.uziro.portfolio.data.MetricStat
+import com.uziro.portfolio.data.PlayPortfolioLink
 import com.uziro.portfolio.data.ProfileInfo
 import com.uziro.portfolio.data.Project
 import com.uziro.portfolio.data.SkillCategory
@@ -13,9 +16,8 @@ import uziroportfolio.composeapp.generated.resources.compose_multiplatform
 import uziroportfolio.composeapp.generated.resources.githublogo
 import uziroportfolio.composeapp.generated.resources.instagram
 import uziroportfolio.composeapp.generated.resources.linkedIn
-import uziroportfolio.composeapp.generated.resources.profile
-import uziroportfolio.composeapp.generated.resources.profile_photo
 import uziroportfolio.composeapp.generated.resources.qbi
+import uziroportfolio.composeapp.generated.resources.robithoh_port
 import uziroportfolio.composeapp.generated.resources.threads
 import uziroportfolio.composeapp.generated.resources.tiktok
 import uziroportfolio.composeapp.generated.resources.wa
@@ -27,60 +29,81 @@ val profileInfo = ProfileInfo(
     location = "Bandung, Indonesia",
     email = "work.iqbalfauzi@gmail.com",
     phone = "+62 878 2288 2668",
-    summary = "Experienced Android Engineer with 7+ years of experience through many scaling mobile application projects. Skilled in Kotlin, Jetpack Compose, MVVM/MVP/MVI, Firebase, GraphQL, and IoT integrations, with a track record of handling complex and mature apps with 1 million+ users. Currently adopting Kotlin Multiplatform (KMP) to expand capabilities across Android, iOS, and shared business logic.",
+    summary = "Experienced Android Engineer with 7+ years of experience across scaling mobile application projects. Skilled in Kotlin, Jetpack Compose, MVVM/MVP/MVI, Firebase, GraphQL, and IoT integrations, with a track record of handling complex, mature apps serving 1 million+ users. Currently adopting Kotlin Multiplatform (KMP) to unify capabilities across Android, iOS, and shared business logic.",
     whatsappUrl = "https://wa.me/6287822882668",
     cvUrl = "https://docs.google.com/document/d/12_bC8Va-h_Gi1Z5pC3Ig1n4k2fEdiNWQyd5HOKFSigs/edit?usp=sharing",
     linkedinUrl = "https://www.linkedin.com/in/ifauzii/",
-    githubUrl = "https://github.com/iqbalwork"
+    githubUrl = "https://github.com/iqbalwork",
+    portfolioUrl = "https://iqbalwork.github.io"
 )
 
 val keyStats = listOf(
     MetricStat(
-        value = "7+ Years",
-        label = "Professional Experience",
-        description = "Building scalable mobile architectures across enterprise and consumer products",
-        highlight = "Kotlin & Compose Specialist"
+        value = "7+ Yrs",
+        label = "Mobile Engineering",
+        description = "Architecting and scaling consumer & enterprise Android products",
+        highlight = "Kotlin & Compose"
     ),
     MetricStat(
-        value = "1M+ Users",
-        label = "Total Apps Audience",
-        description = "Production applications delivered with high concurrency and reliability",
-        highlight = "60K MAU on Bobobox"
+        value = "1M+",
+        label = "Apps Audience",
+        description = "Production apps serving 60K MAU on Bobobox & 200K MAU on Quran App",
+        highlight = "High Concurrency"
     ),
     MetricStat(
         value = "99.9%",
-        label = "Crash-Free Stability",
-        description = "Proactive crash monitoring via Firebase Crashlytics & rigorous QA",
+        label = "Crash-Free Rate",
+        description = "Proactive Firebase Crashlytics monitoring & Maestro E2E automation",
         highlight = "99% Bug Reduction"
     ),
     MetricStat(
-        value = "4+ Scaled",
-        label = "Enterprise Projects",
-        description = "Hospitality IoT, Digital Quran, Healthcare, and Cross-Platform KMP",
-        highlight = "KMP & Compose Multiplatform"
+        value = "3 Targets",
+        label = "Unified Stack",
+        description = "KMP mobile unification (Android & iOS) & cross-platform Remote Config",
+        highlight = "Android · iOS · Web"
     )
 )
 
 val experienceList = listOf(
     ExperienceItem(
         company = "PT Bobobox Mitra Indonesia",
-        role = "Android Engineer",
+        role = "Senior Android Engineer",
         period = "Mar 2020 – Present",
         location = "Bandung, Indonesia",
         type = "Full Time",
-        description = "Leading Android engineering efforts for a tech-enabled accommodation platform with tens of thousands of active guests.",
-        achievements = listOf(
-            "Led re-architecture of Bobobox App from MVP → MVVM and single → multi-module structure, improving scalability and maintainability while achieving 8.5/10.0 NPS and 60K MAU.",
-            "Implemented comprehensive crash monitoring using Firebase Crashlytics, proactively resolving production bugs to maintain 99.9% stability.",
-            "Engineered IoT features using MQTT protocol to enable direct smart pod control (doors, lights, ambiance) from the mobile app.",
-            "Began adopting Kotlin Multiplatform (KMP) for cross-platform Android & iOS shared business logic.",
-            "Reduced feature cost by 50% for Google Maps display on the application.",
-            "Mentored junior engineers and helped mobile teams establish team charters for strategic roles.",
-            "Introduced automated end-to-end testing with Maestro to empower the QA team.",
-            "Led AI-Assisted Engineering Standards in collaboration with the CTO for the entire engineering organization."
+        description = "Driving mobile architecture, cross-platform Kotlin Multiplatform unification, IoT smart pod experiences, and AI-assisted engineering standards.",
+        phases = listOf(
+            ExperiencePhase(
+                title = "Senior Android Engineer · Platform Unification, KMP & AI Harness",
+                period = "Mar 2020 – Present",
+                achievements = listOf(
+                    "Unified Mobile App for Android & iOS with Kotlin Multiplatform (KMP).",
+                    "Unified Remote Config platform across Android, iOS, and Web.",
+                    "Improved BPad application code cleanliness and maintainability.",
+                    "Built AI Harness standard for the Tech Team in collaboration with the CTO."
+                )
+            ),
+            ExperiencePhase(
+                title = "Android Engineer · Core Android Architecture, IoT & Scale",
+                period = "Mar 2020 – Jul 2026",
+                achievements = listOf(
+                    "Led re-architecture of Bobobox App from MVP to MVVM and single to multi-module structure, reducing maintenance overhead while achieving an 8.5/10.0 NPS score and 60K Monthly Active Users.",
+                    "Implemented comprehensive crash monitoring using Firebase Crashlytics, proactively resolving production issues to sustain 99.9% stability.",
+                    "Implemented IoT features (MQTT protocol) enabling seamless control of smart pods (doors and ambient lighting).",
+                    "Began adopting Kotlin Multiplatform (KMP) for cross-platform Android & iOS shared logic.",
+                    "Reduced Google Maps display feature cost by 50%.",
+                    "Mentored junior engineers and helped mobile teams establish strategic team charters.",
+                    "Introduced and trained the QA team on Automation Testing with Maestro.",
+                    "Led AI-Assisted Engineering Standards with the CTO for the engineering organization."
+                )
+            )
         ),
-        technologies = listOf("Kotlin", "Jetpack Compose", "KMP", "MQTT Protocol (IoT)", "Multi-Module MVVM", "Firebase Crashlytics", "Maestro", "Coroutines & Flow", "Hilt/Koin"),
-        metrics = listOf("99.9% Stability", "60K MAU", "8.5/10 NPS", "50% Maps Cost Cut")
+        technologies = listOf(
+            "Kotlin", "Jetpack Compose", "Kotlin Multiplatform", "Swift",
+            "MQTT (IoT)", "Multi-Module MVVM", "Firebase Crashlytics",
+            "Remote Config", "Maestro", "Coroutines & Flow", "Hilt / Koin"
+        ),
+        metrics = listOf("99.9% Stability", "60K MAU", "8.5/10 NPS", "50% Maps Cost Cut", "Android + iOS + Web")
     ),
     ExperienceItem(
         company = "PT Al Qosbah Inovasi Digital",
@@ -88,14 +111,17 @@ val experienceList = listOf(
         period = "Oct 2021 – Nov 2023",
         location = "Bandung, Indonesia",
         type = "Part Time",
-        description = "Consulted on architectural improvements and advanced UI features for Quran Belajar Indonesia.",
+        description = "Consulted on strategic architectural improvements, pixel-perfect Quran rendering, and battery-efficient background scheduling.",
         achievements = listOf(
-            "Contributed to strategic development planning, resulting in a 99% reduction in application bugs within 3 months and scaling to 200K MAU in one year.",
-            "Designed and implemented unique spatial coordinate calculations for verse highlighting, computing dynamic X & Y coordinates based on source image resolution and device scaling for pixel-perfect multi-device rendering.",
-            "Engineered robust background service architecture for precision prayer time calculations using WorkManager and AlarmManager with resource-efficient scheduling."
+            "Contributed to strategic development planning by identifying and implementing key architectural improvements, resulting in a 99% reduction in application bugs within 3 months, accelerated 6-month release cycles, and growth to 200K Monthly Active Users in a year.",
+            "Consulted on and implemented advanced UI features, including Quran Verse Highlighting with spatial calculations (computing X & Y coordinates from original image resolution and device scaling) for pixel-perfect display across devices.",
+            "Designed and integrated robust background service capabilities for prayer time calculation using WorkManager and AlarmManager with resource-efficient scheduling."
         ),
-        technologies = listOf("Kotlin", "Multi-Module", "Custom Canvas Spatial Math", "WorkManager", "AlarmManager", "Background Services"),
-        metrics = listOf("99% Bug Reduction", "200K MAU", "Pixel-Perfect Dynamic Spatial UI")
+        technologies = listOf(
+            "Kotlin", "Multi-Module", "Spatial X/Y Coordinate Math",
+            "WorkManager", "AlarmManager", "Background Processing"
+        ),
+        metrics = listOf("99% Bug Reduction", "200K MAU", "Pixel-Perfect Spatial UI")
     ),
     ExperienceItem(
         company = "PT Jasamedika Saranatama",
@@ -103,15 +129,15 @@ val experienceList = listOf(
         period = "Feb 2019 – Mar 2020",
         location = "Bandung, Indonesia",
         type = "Full Time",
-        description = "Engineered healthcare and emergency response applications from scratch.",
+        description = "Engineered healthcare and emergency dispatch applications from scratch with modular architecture and real-time routing.",
         achievements = listOf(
             "Engineered healthcare applications (Buku Dokter, PSC 119) from scratch utilizing multi-module architecture and Koin dependency injection.",
-            "Integrated Mapbox routing for real-time ambulance dispatch and navigation within the PSC 119 emergency response system.",
-            "Migrated legacy Java codebases to Kotlin, accelerating feature development velocity.",
+            "Integrated Mapbox routing for real-time ambulance navigation within the PSC 119 emergency response application.",
+            "Migrated legacy Java codebases to Kotlin, accelerating development cycles.",
             "Enhanced performance and scalability across internal HRIS and academic applications."
         ),
-        technologies = listOf("Kotlin", "Java", "Mapbox SDK", "Multi-Module", "Koin DI", "Healthcare Systems"),
-        metrics = listOf("PSC 119 Emergency Launch", "Java → Kotlin Migration")
+        technologies = listOf("Kotlin", "Java", "Mapbox SDK", "Multi-Module", "Koin DI", "Real-Time Tracking"),
+        metrics = listOf("PSC 119 Emergency Launch", "Java-to-Kotlin Migration")
     ),
     ExperienceItem(
         company = "PT Kinest Kreatif Ideata",
@@ -119,11 +145,11 @@ val experienceList = listOf(
         period = "Oct 2018 – Dec 2018",
         location = "Bandung, Indonesia",
         type = "Full Time",
-        description = "Developed internal HRIS Android application implementing core Android architecture.",
+        description = "Developed an internal HRIS Android application implementing modular design, dependency injection, and REST synchronization.",
         achievements = listOf(
-            "Developed an internal HRIS Android application implementing modular design and core Android architectural patterns.",
+            "Developed an internal HRIS Android application implementing modular design and core Android architecture.",
             "Applied Dependency Injection to establish a scalable and maintainable codebase.",
-            "Integrated RESTful APIs via Retrofit for reliable client-server data synchronization."
+            "Integrated REST APIs via Retrofit for reliable client-server data synchronization."
         ),
         technologies = listOf("Android SDK", "Retrofit", "REST APIs", "Dependency Injection", "Modular Design"),
         metrics = listOf("Internal HRIS Release")
@@ -133,78 +159,114 @@ val experienceList = listOf(
 val skillCategories = listOf(
     SkillCategory(
         name = "Mobile Development & Frameworks",
-        iconName = "phone",
+        iconKey = "mobile",
         skills = listOf(
             "Kotlin", "Java", "Swift", "Jetpack Compose", "Compose Multiplatform",
-            "Kotlin Multiplatform (KMP)", "Android Jetpack (Navigation, Room)",
-            "MVVM / MVI / MVP", "Clean Architecture", "Coroutines & Flow",
-            "Dagger2 / Hilt / Koin", "WorkManager", "SQLDelight", "Coil"
+            "Kotlin Multiplatform (KMP)", "Android Jetpack (Compose, Navigation, Room)",
+            "MVVM", "MVI", "Clean Architecture", "Coroutines", "Flow",
+            "Dagger2", "Hilt", "Koin", "WorkManager", "Background Processing",
+            "Widget", "Modular Architecture", "SDK Development", "Coil",
+            "SQLDelight", "ViewModel", "LiveData"
         ),
-        highlight = "7+ Years Native & Multiplatform Expertise"
+        highlight = "7+ Years Native Android & KMP Mastery"
     ),
     SkillCategory(
         name = "Backend & Cloud Integrations",
-        iconName = "cloud",
+        iconKey = "cloud",
         skills = listOf(
-            "RESTful APIs", "GraphQL Integration", "Firebase Suite (Crashlytics, Auth, RemoteConfig)",
-            "MQTT Protocol (IoT)", "Ktor Client", "Push Notifications (FCM)", "FastAPI", "Strapi"
+            "RESTful APIs", "GraphQL Integration", "Firebase", "MQTT",
+            "Ktor", "Push Notifications", "Strapi", "FastAPI"
         ),
-        highlight = "IoT MQTT & Realtime Cloud Services"
+        highlight = "IoT MQTT, GraphQL & Multiplatform Networking"
     ),
     SkillCategory(
-        name = "Testing & Quality Assurance",
-        iconName = "check",
+        name = "Testing & Quality",
+        iconKey = "testing",
         skills = listOf(
-            "Maestro (E2E Automation)", "Espresso", "JUnit", "Mockito",
-            "Kotlin Test", "Code Review", "Test-Driven Development (TDD)", "Crash Analysis"
+            "JUnit", "Mockito", "Kotlin Test", "Unit Testing",
+            "UI Testing", "Espresso", "Maestro (Automation)", "Code Review", "TDD"
         ),
-        highlight = "99.9% Production Crash-Free Standards"
+        highlight = "99.9% Crash-Free Engineering Discipline"
     ),
     SkillCategory(
-        name = "Architecture & Systems Design",
-        iconName = "architecture",
+        name = "Advanced Features & Optimization",
+        iconKey = "optimization",
         skills = listOf(
-            "Multi-Module Architecture", "SDK Development", "Performance Optimization",
-            "A/B Testing", "Real-Time Tracking & Mapbox", "QR Code Scanning",
-            "Mobile Security", "Spatial UI Calculations", "Resource-Efficient Scheduling"
+            "A/B Testing", "Performance Optimization", "Real-Time Tracking",
+            "QR Code Scanning", "Mobile Security", "System Design",
+            "Software Architecture", "Dependency Injection", "User Experience (UX)",
+            "IoT", "Remote Configuration"
         ),
-        highlight = "Enterprise Modular App Architectures"
+        highlight = "Unified Remote Config & High-Scale Systems"
     ),
     SkillCategory(
-        name = "Leadership & Tooling",
-        iconName = "leadership",
+        name = "Tools & Methodologies",
+        iconKey = "tools",
         skills = listOf(
-            "Technical Leadership", "Engineer Mentorship", "AI-Assisted Engineering Standards",
-            "Git / GitHub / GitLab", "Gradle Build Optimization", "Jira / Agile / Scrum", "Postman"
+            "Git", "GitHub", "GitLab", "Gradle", "Jira", "Agile", "Scrum", "Postman"
         ),
-        highlight = "AI-Assisted Workflow Standard Lead"
+        highlight = "Distributed & Async Team Workflows"
+    ),
+    SkillCategory(
+        name = "Leadership & Project Management",
+        iconKey = "leadership",
+        skills = listOf(
+            "Technical Leadership", "Mentorship", "Project Management",
+            "Product Management", "AI Harness Standards", "Team Charters"
+        ),
+        highlight = "CTO-Aligned AI Harness & Mobile Mentoring"
     )
 )
 
 val projectList = listOf(
     Project(
+        title = "Robithoh",
+        category = "Kotlin Multiplatform (KMP)",
+        image = Res.drawable.robithoh_port,
+        overview = "Modern multiplatform TQN Suryalaya Sirnarasa worship and amaliyah companion app (v2.0.0) built 100% offline-first with zero ads. Features the 604-page Kemenag RI Quran Mushaf, precise prayer schedules, Qibla compass, haptic 165x digital tasbih, interactive home-screen widgets, and worldwide Wakil Talqin directory.",
+        techStack = listOf(
+            "Kotlin Multiplatform & Compose Multiplatform",
+            "Robithoh Design System (Material 3)",
+            "Jetpack Glance (8 Interactive Home Widgets)",
+            "Navigation 3 & Predictive Back",
+            "100% Offline-First Local Engine",
+            "Android (Google Play) & iOS / Safari Web App"
+        ),
+        impact = listOf(
+            "Offline-First Engine: Engineered a 100% offline-first architecture with zero ads, delivering 604-page Kemenag RI Mushaf vector rendering and 38 amaliyah chapters",
+            "Multiplatform Release: Shipped v2.0.0 across Android (Google Play, Android 7.0-15+) and iOS / Safari Web App (robithoh-app.vercel.app)",
+            "Interactive Android Widgets: Built 8 Jetpack Glance home-screen widget variants (Prayer Schedule 4x2/4x1 & Digital Tasbih 2x2/4x1) with automatic WidgetSync",
+            "Trilingual & v2.0.0 Updates: Delivered Kitab Manqobah 1-56 in Arabic, Indonesian & Sundanese, Worldwide Wakil Talqin Directory, Official Maklumat & independent Adhan volume"
+        ),
+        nextPlan = listOf(
+            "Expanding digital khidmah features and cross-platform experience across Android and iOS Web App"
+        ),
+        playStoreUrl = "https://play.google.com/store/apps/details?id=com.iqbalwork.robithoh",
+        url = "https://robithoh.vercel.app/"
+    ),
+    Project(
         title = "Bobobox App",
         category = "Hospitality & IoT",
         image = Res.drawable.bobobox_port,
-        overview = "Leading Android engineering efforts since March 2020 for a tech-enabled accommodation platform. The role focuses on designing and scaling the mobile app, which serves 60K monthly active users and includes complex IoT integrations for controlling smart pods (lights, doors) directly from the guest's device.",
+        overview = "Flagship tech-enabled accommodation platform serving 60K monthly active users. Evolved from legacy MVP into a multi-module MVVM & Kotlin Multiplatform ecosystem unifying Android & iOS, paired with cross-platform Remote Config and real-time MQTT smart pod hardware control.",
         techStack = listOf(
-            "Kotlin (Migrated from Java)",
-            "Jetpack Compose (Modern Declarative UI)",
-            "Kotlin Multiplatform (KMP Shared Logic)",
-            "MQTT Protocol (Real-time Smart Pod IoT)",
+            "Kotlin & Jetpack Compose",
+            "Kotlin Multiplatform (Android & iOS Unification)",
+            "Unified Remote Config (Android, iOS & Web)",
+            "MQTT Protocol (Smart Pod Doors & Lights)",
             "Multi-Module MVVM Architecture",
             "Firebase Crashlytics (99.9% Stability)",
-            "Maestro Automated Testing"
+            "Maestro Automated E2E Testing"
         ),
         impact = listOf(
-            "Stability: Raised crash-free user rate from 79% to 99.9% with proactive crash monitoring",
-            "Scalability: Successfully re-architected the legacy monolithic MVP codebase into a scalable, multi-module MVVM structure",
-            "IoT Innovation: Enabled seamless, instant control of physical pod doors and ambient smart lighting via MQTT",
-            "Cost Efficiency: Reduced Google Maps API feature costs by 50% through optimized caching and rendering",
-            "User Satisfaction: Achieved an 8.5 out of 10.0 NPS score with over 60,000 Monthly Active Users"
+            "Cross-Platform Unification: Unified Android & iOS mobile app with Kotlin Multiplatform and unified Remote Config across Android, iOS, and Web",
+            "Stability & Cleanliness: Maintained 99.9% crash-free stability via Firebase Crashlytics and improved BPad app code cleanliness",
+            "Scalability & Satisfaction: Re-architected MVP to multi-module MVVM with 8.5/10.0 NPS score and 60,000 Monthly Active Users",
+            "IoT & Cost Efficiency: Delivered real-time MQTT smart pod control and reduced Google Maps display costs by 50%",
+            "Engineering Excellence: Built the Tech Team AI Harness standard in collaboration with the CTO"
         ),
         nextPlan = listOf(
-            "Cross-Platform Expansion: Expanding Kotlin Multiplatform (KMP) to unify business logic across Android and iOS"
+            "Expanding shared KMP modules and AI-assisted engineering harness workflows across product teams"
         ),
         playStoreUrl = "https://play.google.com/store/apps/details?id=com.bobobox.bobobox",
         url = "https://play.google.com/store/apps/details?id=com.bobobox.bobobox"
@@ -213,19 +275,19 @@ val projectList = listOf(
         title = "Quran Belajar Indonesia",
         category = "Education & Utility",
         image = Res.drawable.qbi,
-        overview = "Served as Senior Android Engineer Consultant. Modernized the Quran Belajar Indonesia application to improve stability, user experience, and deliver precise verse highlighting across hundreds of Android screen resolutions.",
+        overview = "Served as Senior Android Engineer Consultant at PT Al Qosbah Inovasi Digital to modernize architecture, drastically reduce defects, and build a pixel-perfect spatial verse highlighting engine across diverse Android devices.",
         techStack = listOf(
             "Kotlin Multi-Module",
-            "Custom Spatial X/Y Coordinate Calculations",
+            "Spatial X/Y Coordinate Scaling Engine",
             "WorkManager & AlarmManager",
-            "Background Service Architecture",
+            "Resource-Efficient Background Services",
             "Clean Architecture"
         ),
         impact = listOf(
-            "Rapid Bug Reduction: Reduced application crashes and bugs by 99% within the first 3 months",
-            "Audience Growth: Scaled to 200,000+ Monthly Active Users within a single year",
-            "Spatial Highlighting: Implemented a pixel-perfect Quran verse highlighting engine calculating exact X & Y coordinates based on original image resolution and device scaling",
-            "Reliable Background Engine: Engineered battery-friendly prayer time calculation services with accurate notification triggers"
+            "Rapid Bug Reduction: Reduced application bugs by 99% within 3 months and accelerated development-to-release within 6 months",
+            "Audience Scale: Scaled to 200,000+ Monthly Active Users within one year",
+            "Spatial Highlighting: Computed exact X & Y verse bounding coordinates from source image resolution and device scaling",
+            "Prayer Time Engine: Engineered reliable WorkManager & AlarmManager scheduling"
         ),
         playStoreUrl = "https://play.google.com/store/apps/details?id=id.quranbelajar.app",
         url = "https://play.google.com/store/apps/details?id=id.quranbelajar.app"
@@ -234,7 +296,7 @@ val projectList = listOf(
         title = "Talangraga Umroh App",
         category = "Kotlin Multiplatform (KMP)",
         image = Res.drawable.compose_multiplatform,
-        overview = "A digital savings and community management application developed using Kotlin Multiplatform and Compose Multiplatform to streamline the Umroh collective savings program with a centralized, transparent system.",
+        overview = "A digital savings and community management application developed using Kotlin Multiplatform and Compose Multiplatform to streamline the Umroh collective savings program with a centralized, transparent ledger.",
         techStack = listOf(
             "Kotlin Multiplatform (Shared KMP Logic)",
             "Compose Multiplatform (Material 3 UI)",
@@ -243,9 +305,9 @@ val projectList = listOf(
             "Python FastAPI Backend"
         ),
         impact = listOf(
-            "Cross-Platform Unity: 100% shared business logic and unified Compose UI across Android and iOS",
-            "Transparent Ledger: Digitized manual savings logs with real-time member dashboards and admin verification",
-            "Modern Stack: Leveraged SQLDelight for local offline persistence and Ktor for resilient network sync"
+            "Cross-Platform Unity: Shared business logic and unified Compose UI across Android and iOS",
+            "Transparent Ledger: Digitized manual savings logs with real-time member dashboards and verification",
+            "Modern Stack: Leveraged SQLDelight for offline persistence and Ktor for resilient network sync"
         ),
         githubUrl = "https://github.com/iqbalwork/talangraga-umroh-mobile",
         url = "https://github.com/iqbalwork/talangraga-umroh-mobile"
@@ -254,25 +316,25 @@ val projectList = listOf(
         title = "PSC 119 & Buku Dokter",
         category = "Healthcare & Emergency",
         image = Res.drawable.compose_multiplatform,
-        overview = "Engineered healthcare and emergency response applications from scratch at PT Jasamedika Saranatama, connecting ambulance drivers with hospital emergency response teams in real time.",
+        overview = "Engineered healthcare and emergency response applications from scratch at PT Jasamedika Saranatama, connecting ambulance drivers with hospital emergency teams using real-time Mapbox navigation.",
         techStack = listOf(
             "Kotlin & Java",
             "Mapbox Navigation SDK",
             "Multi-Module Architecture",
             "Koin Dependency Injection",
-            "Real-time GPS Tracking"
+            "Real-Time GPS Tracking"
         ),
         impact = listOf(
-            "Emergency Response: Enabled real-time turn-by-turn navigation for ambulance drivers during emergency dispatches",
-            "From Scratch Delivery: Built the Buku Dokter and PSC 119 application suite with modular, testable architecture",
-            "Modernization: Migrated legacy hospital Java codebases to Kotlin"
+            "Emergency Dispatch: Enabled real-time Mapbox routing for ambulance navigation in PSC 119",
+            "From-Scratch Architecture: Engineered Buku Dokter and PSC 119 with multi-module design and Koin DI",
+            "Codebase Modernization: Migrated legacy Java codebases to Kotlin and boosted internal HRIS/academic performance"
         )
     ),
     Project(
-        title = "Internal HRIS (Kinest / Kakatu)",
+        title = "Internal HRIS (Kinest)",
         category = "Enterprise Tools",
         image = Res.drawable.compose_multiplatform,
-        overview = "Developed an internal Human Resource Information System Android application implementing modular design, dependency injection, and RESTful API integration via Retrofit.",
+        overview = "Developed an internal Human Resource Information System Android application at PT Kinest Kreatif Ideata implementing modular design, dependency injection, and RESTful synchronization via Retrofit.",
         techStack = listOf(
             "Android SDK",
             "Retrofit",
@@ -280,18 +342,39 @@ val projectList = listOf(
             "Modular Architecture"
         ),
         impact = listOf(
-            "Streamlined Operations: Delivered internal attendance and HR management tools for company operations",
-            "Established Best Practices: Introduced clean architectural patterns and structured API client layers"
+            "Modular Foundation: Established scalable architecture with Dependency Injection",
+            "Reliable Sync: Integrated RESTful APIs via Retrofit for dependable client-server synchronization"
         )
     )
 )
 
 val educationInfo = EducationItem(
     degree = "Bachelor of Informatics Engineering",
-    institution = "Universitas Siliwangi",
-    location = "Tasikmalaya, Indonesia",
+    institution = "Universitas Siliwangi – Indonesia",
+    location = "Tasikmalaya",
     period = "Sep 2014 – Aug 2018",
-    description = "Focused on Software Engineering, Mobile Development, Algorithm Design, and Distributed Systems."
+    description = "Graduated in Informatics Engineering with foundational focus on Software Engineering, Algorithms, and Mobile Application Development."
+)
+
+val additionalProfileInfo = AdditionalProfileInfo(
+    asyncCollaboration = "Experienced in async collaboration tools (Slack, Jira, GitHub) and working effectively with distributed engineering teams.",
+    playStoreLinks = listOf(
+        PlayPortfolioLink(
+            title = "Robithoh",
+            subtitle = "TQN Worship & Amaliyah · KMP Offline-First",
+            url = "https://play.google.com/store/apps/details?id=com.iqbalwork.robithoh"
+        ),
+        PlayPortfolioLink(
+            title = "Bobobox App",
+            subtitle = "Hospitality, IoT Smart Pod & KMP",
+            url = "https://play.google.com/store/apps/details?id=com.bobobox.bobobox"
+        ),
+        PlayPortfolioLink(
+            title = "Quran App",
+            subtitle = "Quran Belajar Indonesia · 200K+ MAU",
+            url = "https://play.google.com/store/apps/details?id=id.quranbelajar.app"
+        )
+    )
 )
 
 val socialMediaList = listOf(
@@ -300,6 +383,6 @@ val socialMediaList = listOf(
     SocialData("WhatsApp", Res.drawable.wa, "https://wa.me/6287822882668"),
     SocialData("Instagram", Res.drawable.instagram, "https://www.instagram.com/uziro.id/"),
     SocialData("Threads", Res.drawable.threads, "https://www.threads.com/@uziro.id"),
-    SocialData("Tiktok", Res.drawable.tiktok, "https://www.tiktok.com/@uziro.id"),
-    SocialData("Youtube", Res.drawable.youtube, "https://www.youtube.com/@uziroid")
+    SocialData("TikTok", Res.drawable.tiktok, "https://www.tiktok.com/@uziro.id"),
+    SocialData("YouTube", Res.drawable.youtube, "https://www.youtube.com/@uziroid")
 )
